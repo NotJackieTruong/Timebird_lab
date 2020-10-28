@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login"
+        aria-selected="true">Login</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register"
+        aria-selected="false">Register</a>
+    </li>
+
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <!-- login -->
+    <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+      <div class="login-container">
+        <div class="form-group">
+          <label for="email" class="bmd-label-floating">Email address</label>
+          <input type="email" class="form-control" id="email" name="email">
+          <span class="bmd-help">We'll never share your email with anyone else.</span>
+        </div>
+        <div class="form-group">
+          <label for="password" class="bmd-label-floating">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button class="btn btn-sm btn-primary" id="login" type="submit">Login</button>
+      </div>
+    </div>
+
+    <!-- register -->
+    <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+      <div class="register-container">
+        <div class="form-group">
+          <label for="avatar">Avatar</label>
+          <cropper-wc title="abc" id="avatar"></cropper-wc>
+        </div>
+        <div class="form-group">
+          <label for="name" class="bmd-label-floating">Name</label>
+          <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="form-group">
+          <label for="email" class="bmd-label-floating">Email address</label>
+          <input type="email" class="form-control" id="email" name="email">
+          <span class="bmd-help">We'll never share your email with anyone else.</span>
+        </div>
+        <div class="form-group">
+          <label for="password" class="bmd-label-floating">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button class="btn btn-sm btn-primary" id="register">Register</button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JQuery -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+  <script type="module" src="/cropper/cropper.js"></script>
+
+  <script>
+    // listen for event
+    const receiveMessage = (event) => {
+      if (event.origin !== 'http://localhost:3000') return
+      console.log('iframe receives message from parent: ', event)
+    }
+    // post message to parent
+    const postMessage = () => {
+      window.parent.postMessage('ifram sends message to parent:', '*',)
+    }
+    window.addEventListener('message', receiveMessage, false)
+
+    // form submit event login
+    document.querySelector('button#login').addEventListener('click', (event) => {
+      var obj = {}
+      document.querySelectorAll('div.login-container input').forEach(element => {
+        obj[element.id] = element.value
+      })
+      $.ajax({
+        type: 'POST',
+        url: 'login',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: result => {
+          if (result.message) {
+            window.alert(result.message)
+          }
+          window.parent.postMessage(result, '*')
+        }
+      })
+    })
+
+    // register
+    document.querySelector('button#register').addEventListener('click', (event) => {
+      var obj = {}
+      obj.avatar = document.querySelector('cropper-wc').getImageData()
+      document.querySelectorAll('div.register-container input').forEach(element => {
+        obj[element.id] = element.value
+      })
+      $.ajax({
+        type: 'POST',
+        url: 'register',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: result => {
+          if (result.message) {
+            window.alert(result.message)
+          }
+          window.parent.postMessage(result, '*')
+        }
+      })
+    })
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      overflow: hidden;
+    }
+
+    #my-iframe {
+      width: 24vw;
+      height: 80vh;
+      margin: 32px auto;
+      position: relative;
+    }
+
+    .page-content {
+      display: flex;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-content">
+      <iframe id="my-iframe" src="http://localhost:3001/register" frameborder="0"></iframe>
+
+    </div>
+
+  </div>
+  <script type="module" src="/cropper/cropper.js"></script>
+
+  <script type="module">
+    // listen for iframe loaded event
+    const receiveMessage = (event) => {
+      console.log('parent receives message from iframe: ', event.data)
+      hanleAccessToken(event.data.accessToken)
+    }
+    // send message
+    const postMessage = () => {
+      document.querySelector('iframe#my-iframe').contentWindow.postMessage('Message from parent...', '*')
+    }
+    window.addEventListener('message', receiveMessage, false)
+  </script>
+</body>
+
+</html>

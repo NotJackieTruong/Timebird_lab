@@ -1,0 +1,393 @@
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<style>
+  body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  nav.navbar.top-nav {
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  nav.navbar.header {
+    height: 90px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .dropdown-menu {
+    background-color: black;
+    opacity: 0.9;
+    color: white;
+  }
+
+  .dropdown-menu a {
+    color: white;
+  }
+
+  .navbar .dropdown-menu a:not(.active) {
+    color: white;
+  }
+
+  .navbar .dropdown-menu a:hover {
+    color: black;
+  }
+
+
+  #phasebeam {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #phasebeam canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .page-content {
+    padding: 40px;
+  }
+
+  .scroll {
+    background-color: black;
+    transition: all 0.6s ease-in-out;
+  }
+
+  .navbar.header .nav-item .nav-link {
+    font-weight: bold;
+  }
+
+  .navbar.top-nav .dropdown-item .nav-link {
+    font-weight: normal;
+  }
+
+  /* me page */
+  .page-body {
+    padding: 16px 0;
+  }
+
+  div.page-content {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  div.page-body .container {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  div.page-content {
+    background-color: white;
+    padding: 16px 32px;
+  }
+
+  .btn-custom-1 {
+    color: white;
+    background-color: rgb(236, 114, 25);
+  }
+
+  .btn-full-width{
+    width: 100%;
+  }
+
+  /* form detail */
+  div.form-header {
+    background-color: #7d7d7d;
+    color: white;
+    padding: 8px 16px;
+  }
+
+  div.form-detail {
+    padding: 8px 0;
+    padding-left: 16px;
+  }
+
+  .input-with-icon {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .input-with-icon span {
+    padding: 8px 16px;
+  }
+
+  .input-with-icon span:hover {
+    cursor: pointer;
+    background-color: lightgrey;
+  }
+</style>
+<div id="navbar-container" class="sticky-top">
+  <!--Top Navbar-->
+  <nav class="navbar navbar-expand-lg navbar-dark top-nav">
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <!-- Links -->
+      <ul class="navbar-nav mr-auto top-nav">
+        <!-- sign in, sign up -->
+        <li class="nav-item dropdown sign-in show">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Sign in</a>
+          <div class="dropdown-menu dropdown-primary login-dropdown" aria-labelledby="navbarDropdownMenuLink">
+            <!-- Email -->
+            <input type="email" id="email" class="form-control mb-4" placeholder="ID or E-mail">
+
+            <!-- Password -->
+            <input type="password" id="password" class="form-control mb-4" placeholder="Password">
+
+            <button class="btn btn-info btn-block my-4" id="btn-sign-in">Sign in</button>
+          </div>
+        </li>
+        <li class="nav-item sign-up show">
+          <a class="nav-link" href="signUp">Sign up</a>
+        </li>
+        <!-- sign out, me page -->
+        <li class="nav-item dropdown my-account hide">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">My account</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item me" id="me">Profile</a>
+            <a class="dropdown-item" href="#">Bet history</a>
+            <a class="dropdown-item" id="sign-out">Sign out</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Some welcome statements!</a>
+        </li>
+        <!-- management page if role > user -->
+        <li class="nav-item management hide">
+          <a href="/management/users" class="nav-link">Management</a>
+        </li>
+      </ul>
+    </div>
+    <!-- Collapsible content -->
+
+  </nav>
+  <!--Navbar-->
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark header">
+    <!-- Navbar brand -->
+    <a class="navbar-brand" href="/" style="font-size: 48px; font-weight: 900;">LOGO</a>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <!-- Links -->
+      <ul class="navbar-nav mr-auto justify-content-end container-fluid">
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Sports</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Live</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Virtual Sports</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">ESports</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Roll</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Rewards</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">More</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+    <!-- Collapsible content -->
+
+  </nav>
+  <!--/.Header-->
+</div>
+
+<!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<script type="module" src="/cropper/cropper.js"></script>
+<!--/.Navbar-->
+<script type="text/javascript" src="/phasebeam.js"></script>
+
+<script>
+  document.querySelector('button#btn-sign-in').addEventListener('click', (event) => {
+    var obj = {}
+    document.querySelectorAll('div.login-dropdown input').forEach(element => {
+      obj[element.id] = element.value
+    })
+    $.ajax({
+      type: 'POST',
+      url: 'signIn',
+      contentType: 'application/json',
+      data: JSON.stringify(obj),
+      success: result => {
+        console.log('result: ', result)
+        hanleAccessToken(result.accessToken)
+      }
+    })
+  })
+
+  const hanleAccessToken = (accessToken) => {
+    $.ajax({
+      type: 'POST',
+      url: 'handleAccessToken',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        accessToken: accessToken
+      }),
+      success: result => {
+        console.log('result: ', result)
+        saveDataToLocalStorage(result, () => {
+          window.location.href = '/'
+        })
+      }
+    })
+  }
+
+  const saveDataToLocalStorage = (result, callback) => {
+    if (result.accessToken) window.localStorage.setItem('accessToken', result.accessToken)
+    if (result.payload.name) window.localStorage.setItem('userName', result.payload.name)
+    if (result.payload.id) window.localStorage.setItem('userId', result.payload.id)
+    if (result.role) window.localStorage.setItem('role', result.role)
+    callback()
+  }
+
+
+</script>
+
+<script>
+  const userName = window.localStorage.getItem('userName')
+  const userId = window.localStorage.getItem('userId')
+  const accessToken = window.localStorage.getItem('accessToken')
+  const userRole = window.localStorage.getItem('role')
+  // show and display sign out
+  if (userRole) {
+    console.log('abc: ', document.querySelectorAll('nav.top-nav.nav-item:not(.management)'))
+    document.querySelectorAll('nav.top-nav .nav-item:not(.management)').forEach(element => {
+      if (element.classList.contains('show')) {
+        element.classList.remove('show')
+        element.classList.add('hide')
+      } else if (element.classList.contains('hide')) {
+        element.classList.remove('hide')
+        element.classList.add('show')
+      }
+    })
+  }
+
+  // handle management
+  if (userRole && userRole !== 'user' && userRole !== 'gameProvider') {
+    document.querySelector('nav.top-nav .management').classList.remove('hide')
+    document.querySelector('nav.top-nav .management').classList.add('show')
+
+  }
+
+  // handle going to me page
+  document.querySelector('a#me').addEventListener('click', (event) => {
+    window.location.href = `/management/${userId}`
+  })
+
+  // handle signing out
+  document.querySelector('a#sign-out').addEventListener('click', (event) => {
+    $.ajax({
+      type: "POST",
+      url: '/signOut',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        accessToken: accessToken,
+      }),
+      success: result => {
+        console.log('result: ', result)
+        window.localStorage.clear()
+        window.location.replace('/')
+      }
+    })
+  })
+
+</script>
+
+<script>
+  window.onscroll = () => {
+    const nav = document.querySelector('#navbar-container');
+    if (this.scrollY <= 10) {
+      nav.classList.remove('scroll')
+    } else {
+      nav.classList.add('scroll');
+    }
+  }
+</script>

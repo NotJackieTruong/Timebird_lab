@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .page-body {
+      padding: 16px 0;
+    }
+
+    div.page-content {
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    div.page-body .container {
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+    }
+
+    div.page-content {
+      background-color: white;
+      padding: 16px 32px;
+    }
+
+    #register {
+      width: 100%;
+      color: white;
+      background-color: rgb(236, 114, 25);
+    }
+
+    /* form detail */
+    div.form-header {
+      background-color: #7d7d7d;
+      color: white;
+      padding: 8px 16px;
+    }
+
+    div.form-detail {
+      padding: 8px 0;
+      padding-left: 16px;
+    }
+
+    .input-with-icon {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .input-with-icon span {
+      padding: 8px 16px;
+    }
+
+    .input-with-icon span:hover {
+      cursor: pointer;
+      background-color: lightgrey;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-body">
+      <!-- new css -->
+      <div class="container">
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col">
+            <div class="page-content">
+              <!-- <div class="user-list" id="user-list"></div> -->
+              <h3><strong>Register new user</strong></h3>
+              <p style="visibility: hidden;">Welcome</p>
+              <div class="container">
+                <div class="row">
+                  <div class="col user-info">
+                    <div class="form-header">
+                      <h5>Personal information</h5>
+                    </div>
+                    <div class="form-detail">
+                      <div class="form-group row">
+                        <label for="avatar" class="col-sm-2 col-form-label">Avatar</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0" style="padding:0 32px;">
+                            <cropper-wc title="abc" id="avatar"></cropper-wc>
+
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group row">
+                        <!-- Material input -->
+                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0 input-with-icon">
+                            <input type="text" class="form-control" id="name">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <!-- Material input -->
+                        <label for="email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0 input-with-icon">
+                            <input type="email" class="form-control" id="email">
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div class="form-group row">
+                        <!-- Material input -->
+                        <label for="password" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0 input-with-icon">
+                            <input type="password" class="form-control" id="password">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col role">
+                    <div class="form-header">
+                      <h5>Role</h5>
+                    </div>
+                    <div class="form-detail">
+                      <div class="form-group row">
+                        <label for="role" class="col-sm-2 col-form-label">Role</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0">
+                            <select class="browser-default custom-select role-select" id="role">
+                              <!-- <option value="root">Root</option> -->
+                              <option value="admin">Admin</option>
+                              <option value="gameProvider">Game provider</option>
+                              <option value="user">Game provider</option>
+
+                            </select>
+                          </div>
+
+                        </div>
+
+                      </div>
+                      <div class="key-container" style="display: none;">
+                        <div class="form-group row">
+                          <label for="baseUrl" class="col-sm-2 col-form-label">Base URL</label>
+                          <div class="col-sm-10">
+                            <div class="md-form mt-0">
+                              <input type="text" class="form-control" id="baseUrl" name="baseUrl">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="rsaKey" class="col-sm-2 col-form-label">RSA Public key</label>
+                          <div class="col-sm-10">
+                            <div class="md-form mt-0">
+                              <textarea type="text" class="form-control" id="rsaKey" name="rsaKey"></textarea>
+                            </div>
+                          </div>
+                          <button class="btn btn-blue-grey" id="btn-generate-key">Generate key</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              <button class="btn" id="register">Register</button>
+            </div>
+          </div>
+          <div class="col-2"></div>
+        </div>
+      </div>
+    </div>
+    <%- include('./footer') %>
+
+  </div>
+  <script>
+    document.querySelector('button#register').addEventListener('click', (event) => {
+      var obj = {}
+      obj.avatar = document.querySelector('cropper-wc').getImageData()
+      document.querySelectorAll('.page-content input, .page-content select, .page-content textarea').forEach(element => {
+        obj[element.id] = element.value
+      })
+      console.log('element: ', obj)
+
+      $.ajax({
+        type: 'POST',
+        url: 'signUp',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: result => {
+          window.location.href = '/management'
+        }
+      })
+    })
+
+    document.querySelector('.page-content select').addEventListener('change', (event) => {
+      if (event.target.value === 'gameProvider') {
+        document.querySelector('div.key-container').style.display = 'block'
+      } else {
+        document.querySelector('div.key-container').style.display = 'none'
+        document.querySelector('input#baseUrl').value = ''
+        document.querySelector('textarea#rsaKey').value = ''
+
+      }
+    })
+  </script>
+  <script>
+    document.querySelector('button#btn-generate-key').addEventListener('click', (event)=>{
+      
+    })
+  </script>
+</body>
+
+</html>

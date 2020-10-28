@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <style>
+      .card {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        margin: 16px auto;
+      }
+
+      .page-content-container {
+        margin: 40px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-content-container">
+      <div class="user-list" id="user-list"></div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit info</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary btn-sm" id="update">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script type="module" src="/cropper/cropper.js"></script>
+
+    <!-- create user card function -->
+    <script>
+      const createUserCard = (user, elementName) => {
+        var card = document.createElement('div')
+        card.className = 'card'
+        card.id = user._id
+        card.innerHTML = `<!-- Card -->
+            <!-- Card image -->
+          <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap"
+            style="width: 16rem;">
+          <!-- Card content -->
+          <div class="card-body">
+            <!-- Title -->
+            <h4 class="card-title"><a></a></h4>
+            <!-- Text -->
+          </div>
+          <div class="card-footer">
+            <!-- Button -->
+            <button class="btn btn-default btn-sm" id="edit">Edit</button>
+          </div>
+        <!-- Card -->`
+        card.querySelector('h4.card-title').innerHTML = user.name
+        for (var prop in user) {
+          if (prop !== 'name' || prop !== 'password' || prop !== 'avatar') {
+            var cardText = document.createElement('p')
+            cardText.className = 'card-text'
+            cardText.innerHTML = `${prop}: ${user[prop]}`
+            card.querySelector('.card-body').appendChild(cardText)
+            console.log('is avatar: ', prop === 'avatar')
+          }
+          if (prop === 'avatar') {
+            console.log('image: ', card.querySelector('img.card-img-top'))
+            card.querySelector('img.card-img-top').setAttribute('src', user[prop])
+          }
+        }
+        document.querySelector(`div#${elementName}`).appendChild(card)
+
+        // edit user
+        card.querySelector('button#edit').addEventListener('click', (event) => {
+          console.log('event: ', event.target)
+          document.querySelector('.modal .modal-body').id = user._id
+          document.querySelector('.modal .modal-body').innerHTML = `<div class="register-container">
+      <div class="form-group">
+        <label for="avatar">Avatar</label>
+        <cropper-wc title="abc" id="avatar"></cropper-wc>
+      </div>
+      <div class="form-group">
+        <label for="name" class="bmd-label-floating">Name</label>
+        <input type="text" class="form-control" id="name" name="name">
+      </div>
+      <div class="form-group">
+        <label for="email" class="bmd-label-floating">Email address</label>
+        <input type="email" class="form-control" id="email" name="email">
+        <span class="bmd-help">We'll never share your email with anyone else.</span>
+      </div>
+      <div class="form-group">
+        <label for="password" class="bmd-label-floating">Password</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
+     
+    </div>`
+          if (user.role === 'admin' || user.role === 'root' || user.role === 'gameProvider') {
+            var div = document.createElement('div')
+            div.className = 'form-group'
+            div.innerHTML = ` 
+        <label for="role">Role</label>
+        <select class="browser-default custom-select role-select" id="role">
+          <option value="root">Root</option>
+          <option value="admin">Admin</option>
+          <option value="gameProvider">Game provider</option>
+        </select>
+      `
+            document.querySelector('.modal .modal-body').appendChild(div)
+          }
+          document.querySelectorAll('.modal .modal-body input, select').forEach(element => {
+            element.value = user[element.id]
+          })
+          // update user info
+          document.querySelector('.modal .modal-footer #update').addEventListener('click', (event) => {
+            console.log('event: ', event.target)
+            var obj = {
+              avatar: document.querySelector('cropper-wc').getImageData(),
+            }
+            document.querySelectorAll('.modal .modal-body input, select').forEach(element => {
+              obj[element.id] = element.value
+            })
+
+            $.ajax({
+              type: 'PUT',
+              url: `/update/${document.querySelector('.modal .modal-body').id}`,
+              contentType: 'application/json',
+              data: JSON.stringify(obj),
+              success: result => {
+                console.log('result: ', result)
+                window.location.reload()
+              }
+            })
+          })
+
+          $('#editUser').modal('show')
+        })
+      }
+    </script>
+
+    <script>
+      const userInfo = <%- JSON.stringify(userInfo) %>;
+      console.log('abcdef')
+      console.log('user list: ', userInfo)
+      createUserCard(userInfo, 'user-list')
+
+
+      // listen for event
+      const receiveMessage = (event) => {
+        if (event.origin !== 'http://localhost:3000') return
+        console.log('iframe receives message from parent: ', event)
+      }
+      // post message to parent
+      const postMessage = () => {
+        window.parent.postMessage('ifram sends message to parent:', '*',)
+      }
+      window.addEventListener('message', receiveMessage, false)
+
+
+    </script>
+
+  </body>
+
+  </html>
+</body>
+
+</html>

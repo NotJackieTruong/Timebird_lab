@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- https://stackoverflow.com/questions/42321539/vanilla-web-component-custom-event-attributes-and-properties -->
+    <!-- <x-pop-out id=XPO onpop="console.log( 'onpop attribute' )"></x-pop-out> -->
+    <x-pop-out id=XPO ></x-pop-out>
+
+    <script>
+        customElements.define('x-pop-out', class extends HTMLElement {
+            connectedCallback() {
+                this.innerHTML = `<button id="Btn">pop</button>`
+
+                this.querySelector('button').onclick = () => {
+                    this.dispatchEvent(new CustomEvent('pop'))
+                    // if (this.onpop)
+                    //     this.onpop()
+                    // else
+                    //     eval(this.getAttribute('onpop'))
+                }
+            }
+        })
+
+        XPO.addEventListener('pop', () => console.info('pop'))
+    </script>
+</body>
+
+</html>

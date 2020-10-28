@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+
+  <script>
+    const receiveMessage = (event) => {
+      if (event.origin !== 'http://localhost:3000') return
+      console.log('iframe receives message from parent: ', event)
+    }
+    // post message to parent
+    const postMessage = () => {
+      window.parent.postMessage('ifram sends message to parent:', '*',)
+    }
+    window.addEventListener('message', receiveMessage, false)
+  </script>
+</body>
+
+</html>

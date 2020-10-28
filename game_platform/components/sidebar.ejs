@@ -1,0 +1,102 @@
+<style>
+  .sidebar-container {
+    background-color: black;
+  }
+
+  .sidebar-header {
+    min-height: 100px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url("https://1xbit.com/default/img/crypto/office/user-info-bg.png");
+    padding-bottom: 8px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .sidebar-header .list-group-item {
+    background-color: transparent;
+  }
+
+  .list-group-item {
+    background-color: #2E2E2E;
+    color: white;
+    border: none;
+    font-weight: bold;
+  }
+
+  .game-provider-features-container a {
+    color: white;
+  }
+</style>
+<div class="sidebar-container">
+  <ul class="list-group">
+    <div class="sidebar-header">
+      <p>Welcome</p>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>Cras justo odio</span>
+        <span class="badge badge-primary badge-pill">14</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>Dapibus ac facilisis in</span>
+        <span class="badge badge-primary badge-pill">2</span>
+      </li>
+    </div>
+    <div class="game-provider-features-container" style="display: none;">
+      <li class="list-group-item list-group-item-action" id="profile"
+        onclick="getPage(`/management/${window.localStorage.getItem('userId')}`)">
+        <div class="md-v-line">
+          <i class="fas fa-user mr-4 pr-3"></i>Profile
+        </div>
+      </li>
+      <li class="list-group-item list-group-item-action" onclick="getPage('/management/games/accepted')">
+        <div class="md-v-line">
+          <i class="fas fa-check mr-4 pr-3"></i>Accepted games
+        </div>
+      </li>
+      <li class="list-group-item list-group-item-action" onclick="getPage('/management/games/submitting')">
+        <div class="md-v-line">
+          <i class="fas fa-laptop mr-4 pr-3"></i>Submitting games
+        </div>
+      </li>
+      <li class="list-group-item list-group-item-action" onclick="getPage('/management/games/dashboard')">
+        <div class="md-v-line">
+          <i class="fas fa-chart-line mr-4 pr-3"></i>Dashboard
+        </div>
+      </li>
+
+    </div>
+    <div class="root-features-container" style="display: none;">
+      <li class="list-group-item list-group-item-action" onclick="getPage('/management/users')">
+        <div class="md-v-line">
+          <i class="fas fa-laptop mr-4 pr-3"></i>Management
+        </div>
+      </li>
+    </div>
+    <li class="list-group-item list-group-item-action">
+      <div class="md-v-line"></div><i class="fas fa-laptop mr-4 pr-3"></i> Cras justo odio
+    </li>
+    <li class="list-group-item list-group-item-action">
+      <div class="md-v-line"></div><i class="fas fa-bomb mr-5"></i>Dapibus ac facilisis in
+    </li>
+    <li class="list-group-item list-group-item-action">
+      <div class="md-v-line"></div><i class="fas fa-code mr-5"></i>Morbi leo risus
+    </li>
+    <li class="list-group-item list-group-item-action">
+      <div class="md-v-line"></div><i class="far fa-gem mr-5"></i>Porta ac consectetur ac
+    </li>
+    <li class="list-group-item list-group-item-action">
+      <div class="md-v-line"></div><i class="fas fa-cogs mr-5"></i>Vestibulum at eros
+    </li>
+  </ul>
+</div>
+
+<script>
+  if (window.localStorage.getItem('role') === 'gameProvider' || 'root') {
+    document.querySelector('.game-provider-features-container').style.display = 'block'
+  }
+  if (window.localStorage.getItem('role') === 'root') {
+    document.querySelector('.root-features-container').style.display = 'block'
+  }
+  const getPage = (url) => {
+    window.location.href = url
+  }
+</script>

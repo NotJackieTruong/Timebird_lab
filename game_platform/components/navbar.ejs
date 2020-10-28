@@ -1,0 +1,117 @@
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<div class="navbar-container">
+  <!--Navbar-->
+  <nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+    <!-- Navbar brand -->
+    <a class="navbar-brand" href="#">Navbar</a>
+
+    <!-- Collapse button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+      aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <!-- Links -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+      
+
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Dropdown</a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+
+      </ul>
+      <!-- Links -->
+
+      <form class="form-inline">
+        <div class="md-form my-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        </div>
+      </form>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarUserName" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"></a>
+          <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarUserName">
+            <a class="dropdown-item" id="me">Info</a>
+            <!-- <a class="dropdown-item" href="/logout" id="logout">Logout</a> -->
+            <a class="dropdown-item" id="logout">Logout</a>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- Collapsible content -->
+
+  </nav>
+  <!--/.Navbar-->
+</div>
+<!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<script>
+  const userName = window.localStorage.getItem('userName')
+  const userId = window.localStorage.getItem('userId')
+  const accessToken = window.localStorage.getItem('accessToken')
+  const userRole = window.localStorage.getItem('role')
+  if(userRole !== 'user'){
+    var li = document.createElement('li')
+    li.innerHTML = `<a class="nav-link" href="management">Management</a>`
+    document.querySelector('ul.navbar-nav').appendChild(li)
+  }
+  console.log('user info: ', userName)
+  document.querySelector('.navbar-container a#navbarUserName').innerHTML = userName
+  // document.querySelector('.navbar-container a#me').setAttribute('href', `/me/${userId}?token=${encodeURIComponent(accessToken)}`)
+  document.querySelector('.navbar-container a#me').setAttribute('href', `management/${userId}`)
+
+  document.querySelector('.navbar-container a#logout').addEventListener('click', (event) => {
+    $.ajax({
+      type: "POST",
+      url: '/logout',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        accessToken: accessToken,
+      }),
+      success: result => {
+        console.log('result: ', result)
+        window.localStorage.clear()
+        window.location.replace('/')
+      }
+    })
+  })
+
+</script>

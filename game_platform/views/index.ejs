@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <style>
+    #my-iframe {
+      width: 800px;
+      height: 600px;
+      margin: auto;
+    }
+
+    .iframe-container {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+  <p>This is parent</p>
+  <div class="iframe-container">
+    <iframe id="my-iframe" frameborder="0" src="http://localhost:3001/"></iframe>
+
+  </div>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+    // listen for iframe loaded event
+    const receiveMessage = (event) => {
+      if (event.origin !== 'http://localhost:3001') return
+      console.log('parent receives message from iframe: ', event.data)
+      $.ajax({
+        type: 'POST',
+        url: 'handleAccessToken',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          accessToken: event.data.accessToken,
+        }),
+        success: result => {
+          console.log('result: ', result)
+          window.localStorage.setItem('accessToken', result.accessToken)
+          window.localStorage.setItem('userName', result.payload.name)
+          window.localStorage.setItem('userId', result.payload.id)
+          window.localStorage.setItem('role', result.role)
+          window.location.replace(event.data.url)
+
+        }
+      })
+
+    }
+    // send message
+    const postMessage = () => {
+      document.querySelector('iframe#my-iframe').contentWindow.postMessage('Message from parent...', '*')
+    }
+    window.addEventListener('message', receiveMessage, false)
+    window.localStorage.clear()
+
+  </script>
+</body>
+
+</html>

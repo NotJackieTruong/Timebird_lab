@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    div.card {
+      display: flex;
+      flex-direction: row;
+      margin: auto;
+    }
+
+    .card .card-img-top {
+      width: 16%;
+    }
+
+    .accepted-games-container {
+      padding: 0 16%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+            <%- include('./sidebar') %>
+          </div>
+          <div class="col">
+            <div class="page-content">
+              <!-- <div class="user-list" id="user-list"></div> -->
+              <h3><strong>Profile</strong></h3>
+              <p>Please fill in the form below to use advance features of the website!</p>
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user" role="tab"
+                    aria-controls="user" aria-selected="true">User</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="game-provider-tab" data-toggle="tab" href="#gameProvider" role="tab"
+                    aria-controls="gameProvider" aria-selected="false">Game provider</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin"
+                    aria-selected="false">Admin</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="user-tab"></div>
+                <div class="tab-pane fade" id="gameProvider" role="tabpanel" aria-labelledby="game-provider-tab"></div>
+                <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab"></div>
+              </div>
+              <button class="btn btn-custom-1 btn-full-width" id="createUser">Create new user</button>
+            </div>
+          </div>
+          <div class="col-2"></div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit info</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary btn-sm" id="update">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('./footer') %>
+    <!-- <div class="user-list" id="user-list"></div>
+             -->
+  </div>
+
+  <script type="module" src="/cropper/cropper.js"></script>
+
+  <script type="module">
+    import { createUserManagement } from '/createUserManagement.js'
+    var users = JSON.parse('<%- JSON.stringify(users) %>')
+    console.log('users: ', users)
+    if (users.length !== 0) {
+      users.forEach(user => {
+        console.log('user role: ', user.role)
+        if (user.role) {
+          switch (user.role.role) {
+            case ('user'):
+              createUserManagement(user, '.page-content #user')
+              break
+            case ('gameProvider'):
+              createUserManagement(user, '.page-content #gameProvider')
+              break
+            case ('admin'):
+              createUserManagement(user, '.page-content #admin')
+              break
+            default:
+          }
+
+        }
+
+      })
+    }
+
+    // create new user button
+    document.querySelector('button#createUser').addEventListener('click', (event) => {
+      window.location.href = '/createNewUser'
+    })
+
+  </script>
+</body>
+
+</html>
