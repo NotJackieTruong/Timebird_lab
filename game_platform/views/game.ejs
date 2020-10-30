@@ -12,7 +12,7 @@
   <!-- Material Design Bootstrap -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
   <style>
-    body{
+    body {
       padding: 0;
       margin: 0;
     }
@@ -20,12 +20,17 @@
 </head>
 
 <body>
-  <%- include('../components/navbar.ejs') %> 
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-content">
+      <iframe src=<%= gameUrl %> id="my-iframe" frameborder="0"
+        style="width: 80%; height: 800px; position: relative;"></iframe>
+    </div>
+    <%- include('./footer') %>
 
-  <div class="page-content-container">
-    <h3><%= game %> </h3>
-    <iframe src="http://localhost:3002" id="my-iframe" frameborder="0" style="width: 100%; height: 100vh;"></iframe>
-    
   </div>
 
   <!-- JQuery -->
@@ -41,16 +46,31 @@
 
   <script>
     const receiveMessage = (event) => {
-      if (event.origin !== 'http://localhost:3002') return
-      console.log('parent receives message from iframe: ', event.data)
-      
+      // if (event.origin !== 'http://localhost:3002') return
+      console.log('parent receives message from iframe: ', event)
+
     }
-    // send message
-    const postMessage = () => {
-      document.querySelector('iframe#my-iframe').contentWindow.postMessage({userInfo}, '*')
-    }
-    window.addEventListener('message', receiveMessage, false)
-    postMessage()
+    // // send message
+    // const postMessage = () => {
+    //   document.querySelector('iframe#my-iframe').contentWindow.postMessage({ userInfo }, '*')
+    // }
+    // window.addEventListener('message', receiveMessage, false)
+    $.ajax({
+      type: 'POST',
+      url: '/decryptAccessToken',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        accessToken: window.localStorage.getItem('accessToken')
+      }),
+      success: result => {
+        console.log('result: ', result)
+        var iframe = document.querySelector('iframe#my-iframe')
+        iframe.addEventListener('load', (event) => {
+          event.target.contentWindow.postMessage({ jwt: result.jwt }, '*')
+
+        })
+      }
+    })
   </script>
 </body>
 

@@ -5,71 +5,108 @@ const algorithm = 'aes-256-cbc'
 const ENC_KEY = Buffer.from("bf3c199c2470cb477d907b1e0917c17bbf3c199c2470cb477d907b1e0917c17b", "hex"); // set random encryption key
 const IV = Buffer.from("5183666c72eec9e45183666c72eec9e4", "hex"); // set random initialisation vector
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs');
+const { error } = require('console');
 
 // encrypt with AES algorithm
 const aesEncrypt = (text) => {
-  let cipher = crypto.createCipheriv(algorithm, ENC_KEY, IV)
-  let encrypted = cipher.update(text)
-  encrypted = Buffer.concat([encrypted, cipher.final()])
-  return encrypted.toString('hex')
+  try {
+    let cipher = crypto.createCipheriv(algorithm, ENC_KEY, IV)
+    let encrypted = cipher.update(text)
+    encrypted = Buffer.concat([encrypted, cipher.final()])
+    return encrypted.toString('hex')
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // decrypt with AES algorithm
 const aesDecrypt = (encrypted) => {
-  var encryptedText = Buffer.from(encrypted, 'hex')
-  let decipher = crypto.createDecipheriv(algorithm, ENC_KEY, IV)
-  let decrypted = decipher.update(encryptedText)
-  decrypted = Buffer.concat([decrypted, decipher.final()])
-  return decrypted.toString()
+  try {
+    var encryptedText = Buffer.from(encrypted, 'hex')
+    let decipher = crypto.createDecipheriv(algorithm, ENC_KEY, IV)
+    let decrypted = decipher.update(encryptedText)
+    decrypted = Buffer.concat([decrypted, decipher.final()])
+    return decrypted.toString()
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // RSA encrypt with pub key
 const rsaEncryptWithPubKey = (text, publicKeyPath) => {
-  const keyPath = path.resolve(publicKeyPath)
-  const publicKey = fs.readFileSync(keyPath, 'utf-8')
-  const buffer = Buffer.from(text, 'utf-8')
-  const encrypted = crypto.publicEncrypt(publicKey, buffer)
-  return encrypted.toString('base64')
+  try {
+    const keyPath = path.resolve(publicKeyPath)
+    const publicKey = fs.readFileSync(keyPath, 'utf-8')
+    const buffer = Buffer.from(text, 'utf-8')
+    const encrypted = crypto.publicEncrypt(publicKey, buffer)
+    return encrypted.toString('base64')
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // RSA encrypt with priv key
 const rsaEncryptWithPrivateKey = (text, privateKeyPath) => {
-  const keyPath = path.resolve(privateKeyPath)
-  const privateKey = fs.readFileSync(keyPath, 'utf-8')
-  const buffer = Buffer.from(text, 'utf-8')
-  const encrypted = crypto.privateEncrypt({
-    key: privateKey.toString(),
-    passphrase: 'this is some secret of system'
-  }, buffer)
-  return encrypted.toString('base64')
+  try {
+    const keyPath = path.resolve(privateKeyPath)
+    const privateKey = fs.readFileSync(keyPath, 'utf-8')
+    const buffer = Buffer.from(text, 'utf-8')
+    const encrypted = crypto.privateEncrypt({
+      key: privateKey.toString(),
+      passphrase: 'this is some secret of system'
+    }, buffer)
+    return encrypted.toString('base64')
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // RSA decrypt with private key
 const rsaDecryptWithPrivateKey = (encrypted, privateKeyPath) => {
-  const keyPath = path.resolve(privateKeyPath)
-  const privateKey = fs.readFileSync(keyPath, 'utf8')
-  const buffer = Buffer.from(encrypted, 'base64')
-  const decrypted = crypto.privateDecrypt(
-    {
-      key: privateKey.toString(),
-      passphrase: 'this is some secret of system',
-    },
-    buffer,
-  )
-  return decrypted.toString('utf8')
+  try {
+    const keyPath = path.resolve(privateKeyPath)
+    const privateKey = fs.readFileSync(keyPath, 'utf8')
+    const buffer = Buffer.from(encrypted, 'base64')
+    const decrypted = crypto.privateDecrypt(
+      {
+        key: privateKey.toString(),
+        passphrase: 'this is some secret of system',
+      },
+      buffer,
+    )
+    return decrypted.toString('utf8')
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // RSA decrypt with public key
 const rsaDecryptWithPublicKey = (encrypted, publicKeyPath) => {
-  const keyPath = path.resolve(publicKeyPath)
-  const publicKey = fs.readFileSync(keyPath, 'utf-8')
-  const buffer = Buffer.from(encrypted, 'base64')
-  const decrypted = crypto.publicDecrypt(
-    publicKey,
-    buffer,
-  )
-  return decrypted.toString('utf-8')
+  try {
+    const keyPath = path.resolve(publicKeyPath)
+    const publicKey = fs.readFileSync(keyPath, 'utf-8')
+    const buffer = Buffer.from(encrypted, 'base64')
+    const decrypted = crypto.publicDecrypt(
+      publicKey,
+      buffer,
+    )
+    return decrypted.toString('utf-8')
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 // test

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('../components/navbar.ejs') %>
+  <div class="page-content-container">
+    <!-- Card -->
+    <div class="card" style="display: flex; flex-direction: row; width: 50%;">
+      <!-- Card image -->
+      <img class="card-img-top" src=<%= result.avatar || 'https://mdbootstrap.com/img/Photos/Others/images/43.jpg' %> alt="Card image cap"
+        style="width: 18rem;">
+      <!-- Card content -->
+      <div class="card-body">
+        <!-- Title -->
+        <h4 class="card-title"><a><%= result.name %></a></h4>
+        <!-- Text -->
+        <p class="card-text"> <%= result._id %></p>
+        <p class="card-text"> <%= result.email %></p>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-default btn-sm" id="edit">Edit</button>
+        <!-- Button -->
+        <button class="btn btn-primary btn-sm" id="subtract-token">Subtract Token</button>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit info</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-sm" id="update">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card -->
+  </div>
+  <script type="module" src="/cropper/cropper.js"></script>
+
+  <script>
+    var aesAccessToken = window.localStorage.getItem('accessToken')
+    // var userId = window.localStorage.getItem('userId')
+    document.querySelector('button#subtract-token').addEventListener('click', (event) => {
+      console.log('event: ', event.target)
+      $.ajax({
+        type: 'POST',
+        url: '/tokens',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          userId,
+          srcAddress: userId,
+          destAddress: 0,
+          value: 100
+        }),
+        success: result => {
+          console.log('result: ', result)
+        }
+      })
+    })
+  </script>
+
+  <script>
+    const userInfo = <%- JSON.stringify(result) %>;
+    console.log('user info: ', userInfo)
+    document.querySelector('button#edit').addEventListener('click', (event) => {
+      console.log('event: ', event.target)
+      document.querySelector('.modal .modal-body').id = userInfo._id
+      document.querySelector('.modal .modal-body').innerHTML = `<div class="register-container">
+      <div class="form-group">
+        <label for="avatar">Avatar</label>
+        <cropper-wc title="abc" id="avatar"></cropper-wc>
+      </div>
+      <div class="form-group">
+        <label for="name" class="bmd-label-floating">Name</label>
+        <input type="text" class="form-control" id="name" name="name">
+      </div>
+      <div class="form-group">
+        <label for="email" class="bmd-label-floating">Email address</label>
+        <input type="email" class="form-control" id="email" name="email">
+        <span class="bmd-help">We'll never share your email with anyone else.</span>
+      </div>
+      <div class="form-group">
+        <label for="password" class="bmd-label-floating">Password</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
+    </div>`
+      document.querySelectorAll('.modal .modal-body input, select').forEach(element => {
+        element.value = userInfo[element.id]
+      })
+      // update user info
+      document.querySelector('.modal .modal-footer #update').addEventListener('click', (event) => {
+        console.log('event: ', event.target)
+        var obj = {
+          avatar: document.querySelector('cropper-wc').getImageData(),
+        }
+        document.querySelectorAll('.modal .modal-body input, select').forEach(element => {
+          obj[element.id] = element.value
+        })
+        $.ajax({
+          type: 'PUT',
+          url: `/update/${document.querySelector('.modal .modal-body').id}`,
+          contentType: 'application/json',
+          data: JSON.stringify(obj),
+          success: result => {
+            console.log('result: ', result)
+            window.location.reload()
+          }
+        })
+      })
+      $('#editUser').modal('show')
+
+    })
+  </script>
+</body>
+
+</html>

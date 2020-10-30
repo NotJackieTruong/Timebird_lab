@@ -10,7 +10,7 @@ var Role = require('../models/role')
 var async = require('async');
 const wallet = require('../models/wallet');
 const mongoose = require('mongoose')
-const fs = require('fs')
+const fs = require('fs');
 require('dotenv').config()
 
 var gameAddress = (process.env.GAME_ADDRESS || 'http://localhost:3002')
@@ -18,9 +18,15 @@ var gamePlatformAddress = (process.env.GAME_PLATFORM_ADDRESS || 'http://localhos
 var ssoAddress = (process.env.SSO_ADDRESS || 'http://localhost:3001')
 
 function parseJwt(token) {
-  var base64Payload = token.split('.')[1];
-  var payload = Buffer.from(base64Payload, 'base64');
-  return JSON.parse(payload.toString());
+  try {
+    var base64Payload = token.split('.')[1];
+    var payload = Buffer.from(base64Payload, 'base64');
+    return JSON.parse(payload.toString());
+  } catch (err) {
+    console.error(err)
+    return
+  }
+
 }
 
 const writeBaseUrlToFile = (baseUrl, userName) => {
@@ -54,6 +60,11 @@ const checkToken = (exp) => {
     console.log(false, 'token is expired')
     return false
   }
+}
+
+// check token middle ware
+const checkTokenMiddleWare = (req, res, next) => {
+
 }
 
 // home page 
@@ -111,7 +122,7 @@ router.post('/signOut', async (req, res) => {
   var accessToken = req.body.accessToken
   console.log('token: ', accessToken)
   // decrypt access token with RSA
-  var rsaAccessTokenDecrypt = await rsaDecryptWithPrivateKey(req.body.accessToken, './bin/private.pem')
+  var rsaAccessTokenDecrypt = rsaDecryptWithPrivateKey(req.body.accessToken, './bin/private.pem')
   console.log('access token after rsa decrypting: ', rsaAccessTokenDecrypt)
 
   // decrypt aes access token with AES
@@ -191,10 +202,30 @@ router.post('/checkAccessToken', (req, res) => {
 
   var payload = parseJwt(aesAccessTokenDecrypt)
   console.log('payload: ', payload)
+  if (payload) {
+    var isExisted = checkToken(payload.exp)
+    res.send({ isExisted: isExisted })
+  } else {
+    res.send({ isExisted: false })
 
-  var isExisted = checkToken(payload.exp)
-  res.send({ isExisted: isExisted })
+  }
 
+
+})
+
+// decrypt access token
+router.post('/decryptAccessToken', (req, res) => {
+  var accessToken = req.body.accessToken
+  console.log('token: ', accessToken)
+  // decrypt access token with RSA
+  var rsaAccessTokenDecrypt = rsaDecryptWithPrivateKey(req.body.accessToken, './bin/private.pem')
+  console.log('access token after rsa decrypting: ', rsaAccessTokenDecrypt)
+
+  // decrypt aes access token with AES
+  var aesAccessTokenDecrypt = aesDecrypt(rsaAccessTokenDecrypt)
+  console.log('access token after aes decrypting: ', aesAccessTokenDecrypt)
+
+  res.send({ jwt: aesAccessTokenDecrypt })
 })
 
 // MANAGEMENT
@@ -305,8 +336,11 @@ router.get('/createNewUser', (req, res) => {
   res.render('createNewUser', {})
 })
 
+// 
 router.get('/game', function (req, res) {
-  res.render('game', { game: 'Game 1' })
+  var game = req.query.game
+  console.log('game url: ', game)
+  res.render('game', { gameUrl: `${gameAddress}/${game}` })
 })
 
 router.post('/tokens', function (req, res) {
@@ -343,6 +377,68 @@ router.post('/tokens', function (req, res) {
 // test get hompage
 router.get('/testHome', (req, res) => {
   res.render('testHome')
+})
+
+// get wallet info
+router.post('/wallet', (req, res) => {
+  console.log('req body: ', req.body)
+  try {
+    fetch.fetchUrl(`${ssoAddress}/users/${req.body.id}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    }, (err, meta, result) => {
+      if (result) {
+        const fetchResponse = JSON.parse(result.toString('utf-8'))
+        console.log('fetch response: ', fetchResponse)
+        Wallet.findOne({ address: req.body.id }).exec((err, result) => {
+          if (err) throw err
+          res.send({ ...fetchResponse.userInfo, amount: result.amount })
+        })
+      }
+    })
+
+  } catch (err) {
+    console.error(err)
+  }
+
+})
+
+router.post('/updatetoken', (req, res, next) => {
+  console.log('req body update token: ', req.body)
+  // 1. reverify alias and userId
+  // 2. update wallet 
+  sourceAddress = req.body.sourceAddress;
+  destAddress = req.body.destAddress;
+  value = req.body.value;
+  var trans = {
+    tran_num: uuidv4(),
+    tran_date: new Date(Date.now()).getTime(),
+    sourceAddress,
+    destAddress,
+    value
+  }
+  console.log('trans: ', trans)
+
+  Wallet.findOneAndUpdate({ address: req.body.userId }, { $push: { book: trans } }, { new: true }).exec((err, result) => {
+    if (err) throw err
+    console.log('result: ', result)
+    if (result) {
+      var amount = 0
+      result.book.forEach(trans => {
+        if (trans.sourceAddress === result.address) {
+          amount -= trans.value
+        } else {
+          amount += trans.value
+        }
+      })
+      Wallet.findOneAndUpdate({ _id: result._id }, { $set: { 'amount': amount } }, { new: true }).exec((err, result) => {
+        if (err) throw err
+        res.send({ 'tokenBalance': result.amount })
+      })
+
+    }
+  })
+
 })
 
 module.exports = router;
