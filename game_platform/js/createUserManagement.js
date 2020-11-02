@@ -1,6 +1,7 @@
 const userCardHTML = `
+<div class="col-12">
 <!-- Card -->
-<div class="card">
+<div class="card card-horizontal">
 
   <!-- Card image -->
   <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg"
@@ -24,7 +25,10 @@ const userCardHTML = `
   </div>
 
 </div>
-<!-- Card -->`
+<!-- Card -->
+</div>
+
+`
 
 var modalBody = `<div class="register-container">
 <div class="form-group">
