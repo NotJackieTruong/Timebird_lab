@@ -1,17 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var fetch = require('fetch')
+var async = require('async');
+const fs = require('fs');
+var Wallet = require('../models/wallet')
+var Role = require('../models/role')
+var Game = require('../models/game')
+
 var {
   aesDecrypt, aesEncrypt, rsaEncryptWithPubKey, rsaEncryptWithPrivateKey, rsaDecryptWithPrivateKey, rsaDecryptWithPublicKey
 } = require('../js/enc_dec');
 const { v4: uuidv4 } = require('uuid');
-var Wallet = require('../models/wallet')
-var Role = require('../models/role')
-var async = require('async');
-const wallet = require('../models/wallet');
-const mongoose = require('mongoose')
-const fs = require('fs');
+const { error } = require('console');
+
 require('dotenv').config()
+
 
 var gameAddress = (process.env.GAME_ADDRESS || 'http://localhost:3002')
 var gamePlatformAddress = (process.env.GAME_PLATFORM_ADDRESS || 'http://localhost:3000')
@@ -38,6 +41,38 @@ const writeBaseUrlToFile = (baseUrl, userName) => {
 const writePubKeyToFile = (pubKey, userName) => {
   fs.writeFile(`./public/gameProviderPubKey/${userName}_pub_key.pem`, pubKey, (err) => {
     if (err) console.error(err)
+  })
+}
+
+const saveAvatarToPublicFolder = (obj, callback) => {
+  var gameInfo = obj
+  if (gameInfo.image) {
+    var image = gameInfo.image
+    let base64Ext = image.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[1]
+    let base64data = image.replace(/^data:image\/[a-z]+;base64,/, "")
+    if (base64data) {
+      fs.writeFile(`./public/images/${gameInfo.name}.${base64Ext}`, base64data, 'base64', (err) => {
+        if (err) console.error(err)
+        gameInfo.image = `/images/${gameInfo.name}.${base64Ext}`
+        callback(gameInfo)
+
+      })
+    }
+  } else {
+    callback(gameInfo)
+
+  }
+}
+
+const deleteAvatarFromPublicFolder = (obj, callback) => {
+  fs.unlink(`./public${obj.image}`, (err) => {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('Delete avatar successfully!')
+    }
+    callback()
+
   })
 }
 
@@ -309,21 +344,71 @@ router.get('/management/:id', function (req, res) {
 
 // delete user
 router.delete('/management/:id', (req, res) => {
-  fetch.fetchUrl(`${ssoAddress}/users/${req.params.id}`, {
-    method: 'DELETE',
-  }, (err, meta, result) => {
-    res.send({ message: result.message })
-  })
+  try {
+    Role.findOneAndDelete({ userId: req.params.id }).exec((err, result) => {
+      if (err) throw err
+    })
+    fetch.fetchUrl(`${ssoAddress}/users/${req.params.id}`, {
+      method: 'DELETE',
+    }, (err, meta, result) => {
+      res.send({ message: result.message })
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
 })
 
 // get accepted games
 router.get('/management/games/accepted', (req, res) => {
-  res.render('acceptedGame', {})
+  Game.find({ status: 'active' }).exec((err, result) => {
+    if (err) throw err
+    var gameList = result.map(res => {
+      res.image = `${gamePlatformAddress}${res.image}`
+      return res
+    })
+    res.render('acceptedGame', { gameList: gameList })
+
+  })
 })
 
 // get submitting game
 router.get('/management/games/submitting', (req, res) => {
-  res.render('submittingGame', {})
+  Game.find({ status: 'pending' }).exec((err, result) => {
+    if (err) throw err
+    var gameList = result.map(res => {
+      res.image = `${gamePlatformAddress}${res.image}`
+      return res
+    })
+    res.render('submittingGame', { gameList: gameList })
+
+  })
+})
+
+// post game
+router.post('/management/games/submitting', (req, res) => {
+  console.log('req body: ', req.body)
+  saveAvatarToPublicFolder(req.body, (gameInfo) => {
+    console.log('game after saving image: ', gameInfo)
+    new Game(gameInfo).save((err, result) => {
+      if (err) throw error
+      res.send({ message: 'Save new game successfully!' })
+    })
+  })
+})
+
+// update game status
+router.put('/management/games/submitting/:id', (req, res) => {
+  console.log('req body: ', req.body)
+  try {
+    Game.findOneAndUpdate({ _id: req.params.id }, { $set: { status: req.body.status } }).exec((err, result) => {
+      if (err) throw err
+      res.send({ message: 'Update game status successfully!' })
+    })
+  } catch (error) {
+    console.error(error)
+  }
+
 })
 
 // get dashboard
@@ -336,12 +421,14 @@ router.get('/createNewUser', (req, res) => {
   res.render('createNewUser', {})
 })
 
-// 
+// get game page to play game
 router.get('/game', function (req, res) {
   var game = req.query.game
   console.log('game url: ', game)
   res.render('game', { gameUrl: `${gameAddress}/${game}` })
 })
+
+
 
 router.post('/tokens', function (req, res) {
   console.log('req body: ', req.body)

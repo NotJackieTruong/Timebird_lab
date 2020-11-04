@@ -6,7 +6,14 @@
 
   <style>
     .accepted-games-container {
-      /* padding: 0 16%; */
+      /* padding: 0 24px; */
+      display: flex;
+      flex-direction: column;
+    }
+
+    button#submit {
+      width: 72%;
+      margin: auto;
     }
   </style>
 </head>
@@ -28,12 +35,10 @@
               <!-- <div class="user-list" id="user-list"></div> -->
               <h3><strong>Accepted games</strong></h3>
               <p>Please fill in the form below to use advance features of the website!</p>
-              <div class="accepted-games-container mt-4">
-                <div class="container">
 
-                </div>
+              <div class="accepted-games-container">
+                <div class="container"></div>
               </div>
-
             </div>
           </div>
           <div class="col-2"></div>
@@ -50,9 +55,17 @@
   <script type="module" src="/cropper/cropper.js"></script>
   <script type="module">
     import { createGameList } from '/createGameList.js'
-    for (var i = 1; i < 5; i++) {
-      createGameList({}, '.accepted-games-container .container')
+    var gameList = JSON.parse('<%- JSON.stringify(gameList)%>')
+    console.log('game list: ', gameList)
+    if (gameList.length !== 0) {
+      gameList.forEach(game => {
+        createGameList(game, '.accepted-games-container .container', 'accepted')
+
+      })
     }
+  </script>
+  <script>
+
   </script>
 
 </body>

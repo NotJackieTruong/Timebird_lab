@@ -7,6 +7,13 @@
   <style>
     .accepted-games-container {
       /* padding: 0 24px; */
+      display: flex;
+      flex-direction: column;
+    }
+
+    button#submit {
+      width: 72%;
+      margin: auto;
     }
   </style>
 </head>
@@ -30,9 +37,9 @@
               <p>Please fill in the form below to use advance features of the website!</p>
 
               <div class="accepted-games-container">
-                <div class="container">
+                <div class="container"></div>
+                <button class="btn btn-custom-1 btn-full-width" id="submit">Submit game</button>
 
-                </div>
               </div>
               <!-- Central Modal Small -->
               <div class="modal fade" id="centralModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -50,10 +57,20 @@
                     <div class="modal-body">
                       <div class="form-group row">
                         <!-- Material input -->
+                        <label for="gameName" class="col-sm-2 col-form-label">Game name</label>
+                        <div class="col-sm-10">
+                          <div class="md-form mt-0 input-with-icon">
+                            <input type="text" class="form-control" id="name">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <!-- Material input -->
                         <label for="gameURL" class="col-sm-2 col-form-label">Game URL</label>
                         <div class="col-sm-10">
                           <div class="md-form mt-0 input-with-icon">
-                            <input type="text" class="form-control" id="gameURL">
+                            <input type="text" class="form-control" id="url">
                           </div>
                         </div>
                       </div>
@@ -77,7 +94,6 @@
                 </div>
               </div>
               <!-- Central Modal Small -->
-              <button class="btn btn-custom-1 btn-full-width" id="submit">Submit game</button>
 
             </div>
           </div>
@@ -95,9 +111,17 @@
   <script type="module" src="/cropper/cropper.js"></script>
   <script type="module">
     import { createGameList } from '/createGameList.js'
-    for (var i = 1; i < 5; i++) {
-      createGameList({}, '.accepted-games-container .container')
+    var gameList = JSON.parse('<%- JSON.stringify(gameList)%>')
+    console.log('game list: ', gameList)
+    if (gameList.length !== 0) {
+      gameList.forEach(game => {
+        createGameList(game, '.accepted-games-container .container', 'submitting')
+
+      })
     }
+  </script>
+  <script>
+
   </script>
   <script>
     document.querySelector('button#submit').addEventListener('click', (event) => {
@@ -106,12 +130,26 @@
     })
     document.querySelector('button#save').addEventListener('click', (event) => {
       var obj = {}
-      obj.avatar = document.querySelector('cropper-wc').getImageData()
+      obj.image = document.querySelector('cropper-wc').getImageData()
+      obj.userId = window.localStorage.getItem('userId')
       document.querySelectorAll('div#centralModal .modal-body input').forEach(element => {
         obj[element.id] = element.value
       })
       console.log('obj: ', obj)
+      $.ajax({
+        type: 'POST',
+        url: '/management/games/submitting',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: result => {
+          console.log('result: ', result)
+          window.location.reload()
+        }
+      })
     })
+  </script>
+  <script>
+
   </script>
 
 </body>
