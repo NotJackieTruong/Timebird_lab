@@ -1,69 +1,58 @@
-const gameListHTML = `
-<div class="col-12">
+const gameCardHTML = `
 <!-- Card -->
-<div class="card card-horizontal">
+<div class="card">
 
-  <div class="card-img-container col-md-2">
-    <!-- Card image -->
-    <img class="card-img-top" id="image" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg"
+  <!--Card image-->
+  <div class="view overlay">
+    <img id="cover" class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/16.jpg"
       alt="Card image cap">
+    <a href="#!">
+      <div class="mask rgba-white-slight"></div>
+    </a>
   </div>
 
-  <!-- Card content -->
+  <!--Card content-->
   <div class="card-body">
 
-    <!-- Title -->
+    <!--Title-->
     <h4 class="card-title" id="name">Card title</h4>
-    <!-- Text -->
-    <p class="card-text" id="url">Some quick example text to build on the card title and make up the bulk of
-      the
-      card's
-      content.</p>
-  </div>
+    <!--Text-->
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+      card's content.</p>
+    <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+    <button type="button" class="btn btn-md btn-primary" id="play">Play</button>
 
-  <!-- Card footer -->
-  <div class="card-footer">
-    <!-- Button -->
-    <button class="btn btn-blue-grey" id="accept">Accept</button>
   </div>
 
 </div>
 <!-- Card -->
-
-</div>
 `
 
 export const createGameList = (object, query, type) => {
-  const div = document.createElement('div')
-  div.className = 'row mb-4 mt-4'
-  div.innerHTML = gameListHTML
-  div.querySelector('.card').id = object._id
+  var div = document.createElement('div')
+  div.className = 'col mb-4'
+  div.innerHTML = gameCardHTML
+
+  var cardDiv = div.querySelector('.card')
+  cardDiv.setAttribute('data-url', object.url)
+  cardDiv.id = object._id
+
   for (var prop in object) {
-    if (div.querySelector(`div.card #${prop}`)) {
-      prop === 'image' ? div.querySelector(`div.card #${prop}`).setAttribute('src', object[prop]) :
-        div.querySelector(`div.card #${prop}`).innerHTML = object[prop]
+    if (div.querySelector(`#${prop}`)) {
+      if (prop === 'cover') {
+        div.querySelector(`#${prop}`).setAttribute('src', object[prop])
+      } else {
+        div.querySelector(`#${prop}`).innerHTML = object[prop]
+      }
     }
   }
-  if(type !== 'submitting'){
-    div.querySelector('.card-footer').removeChild(div.querySelector('button#accept'))
-  }
-  if(div.querySelector('button#accept')){
-    div.querySelector('button#accept').addEventListener('click', (event) => {
-      console.log('event: ', event.target.closest('.card'))
-      $.ajax({
-        type: 'PUT',
-        url: `/management/games/submitting/${event.target.closest('.card').id}`,
-        contentType: 'application/json',
-        data: JSON.stringify({
-          status: 'active'
-        }),
-        success: result => {
-          console.log('result: ', result)
-          window.location.reload()
-        }
-      })
-    })
-  }
- 
+  div.querySelector('button#play').addEventListener('click', event => {
+    handlePlayGame(event)
+  })
   document.querySelector(`${query}`).appendChild(div)
+}
+
+const handlePlayGame = (event) => {
+  var game = event.target.closest('.card').getAttribute('data-url')
+  window.location.href = `/game?game=${game}`
 }

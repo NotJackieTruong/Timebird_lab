@@ -104,7 +104,10 @@ const checkTokenMiddleWare = (req, res, next) => {
 
 // home page 
 router.get('/', function (req, res) {
-  res.render('home', {})
+  Game.find({status: 'active'}).exec((err, result)=>{
+    if(err) throw err
+    res.render('home', {gameList: result})
+  })
 })
 
 // login
