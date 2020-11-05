@@ -4,7 +4,7 @@ const userCardHTML = `
 <div class="card card-horizontal">
 
   <!-- Card image -->
-  <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg"
+  <img id="avatar" class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg"
     alt="Card image cap">
 
   <!-- Card content -->
@@ -65,6 +65,7 @@ export const createUserManagement = (object, query) => {
   div.querySelectorAll('.card .card-body p').forEach(element => {
     element.innerHTML = object[element.id]
   })
+  div.querySelector('.card #avatar').setAttribute('src', object.avatar)
   document.querySelector(query).appendChild(div)
   const card = div.querySelector('.card')
 

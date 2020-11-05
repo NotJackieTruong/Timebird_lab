@@ -104,9 +104,9 @@ const checkTokenMiddleWare = (req, res, next) => {
 
 // home page 
 router.get('/', function (req, res) {
-  Game.find({status: 'active'}).exec((err, result)=>{
-    if(err) throw err
-    res.render('home', {gameList: result})
+  Game.find({ status: 'active' }).exec((err, result) => {
+    if (err) throw err
+    res.render('home', { gameList: result })
   })
 })
 
@@ -336,11 +336,19 @@ router.get('/management/:id', function (req, res) {
     // res.render('me')
     var userInfo = result.userInfo
     userInfo.avatar = `${ssoAddress}${userInfo.avatar}`
-    Role.findOne({ userId: userInfo._id }).exec((err, result) => {
+    async.parallel({
+      role: callback => {
+        Role.findOne({ userId: userInfo._id }).exec(callback)
+      },
+      wallet: callback => {
+        Wallet.findOne({ address: userInfo._id }).exec(callback)
+      }
+    }, (err, results) => {
       if (err) throw err
-      res.render('me', { userInfo: userInfo, role: result.role })
+      res.render('me', { userInfo: userInfo, role: results.role.role, transHistory: results.wallet.book })
 
     })
+
   })
 
 })
