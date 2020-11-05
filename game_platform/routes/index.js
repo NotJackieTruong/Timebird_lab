@@ -46,14 +46,14 @@ const writePubKeyToFile = (pubKey, userName) => {
 
 const saveAvatarToPublicFolder = (obj, callback) => {
   var gameInfo = obj
-  if (gameInfo.image) {
-    var image = gameInfo.image
-    let base64Ext = image.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[1]
-    let base64data = image.replace(/^data:image\/[a-z]+;base64,/, "")
+  if (gameInfo.cover) {
+    var cover = gameInfo.cover
+    let base64Ext = cover.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)[0].split('/')[1]
+    let base64data = cover.replace(/^data:image\/[a-z]+;base64,/, "")
     if (base64data) {
       fs.writeFile(`./public/images/${gameInfo.name}.${base64Ext}`, base64data, 'base64', (err) => {
         if (err) console.error(err)
-        gameInfo.image = `/images/${gameInfo.name}.${base64Ext}`
+        gameInfo.cover = `/images/${gameInfo.name}.${base64Ext}`
         callback(gameInfo)
 
       })
@@ -364,7 +364,7 @@ router.get('/management/games/accepted', (req, res) => {
   Game.find({ status: 'active' }).exec((err, result) => {
     if (err) throw err
     var gameList = result.map(res => {
-      res.image = `${gamePlatformAddress}${res.image}`
+      res.cover = `${gamePlatformAddress}${res.cover}`
       return res
     })
     res.render('acceptedGame', { gameList: gameList })
@@ -377,7 +377,7 @@ router.get('/management/games/submitting', (req, res) => {
   Game.find({ status: 'pending' }).exec((err, result) => {
     if (err) throw err
     var gameList = result.map(res => {
-      res.image = `${gamePlatformAddress}${res.image}`
+      res.cover = `${gamePlatformAddress}${res.cover}`
       return res
     })
     res.render('submittingGame', { gameList: gameList })
@@ -389,7 +389,7 @@ router.get('/management/games/submitting', (req, res) => {
 router.post('/management/games/submitting', (req, res) => {
   console.log('req body: ', req.body)
   saveAvatarToPublicFolder(req.body, (gameInfo) => {
-    console.log('game after saving image: ', gameInfo)
+    console.log('game after saving cover: ', gameInfo)
     new Game(gameInfo).save((err, result) => {
       if (err) throw error
       res.send({ message: 'Save new game successfully!' })

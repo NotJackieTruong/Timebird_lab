@@ -11,9 +11,20 @@
       flex-direction: column;
     }
 
-    button#submit {
-      width: 72%;
-      margin: auto;
+    table#submitting-game-table tbody th {
+      vertical-align: middle;
+    }
+
+    table#submitting-game-table tbody .game-cover {
+      width: 131px;
+    }
+
+    table#submitting-game-table th,
+    td {
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -32,41 +43,50 @@
           </div>
           <div class="col">
             <div class="page-content">
-              <!-- <div class="user-list" id="user-list"></div> -->
               <h3><strong>Accepted games</strong></h3>
               <p>Please fill in the form below to use advance features of the website!</p>
+              <table class="table table-dark table-hover table-responsive-md btn-table" id="submitting-game-table">
+                <thead>
+                  <tr>
+                    <th id="cover">Game cover</th>
+                    <th id="name">Name</th>
+                    <th id="createdAt">Submitting date</th>
+                    <th id="url">URL</th>
+                    <th id="creator">Creator</th>
+                    <th id="option">Options</th>
+                  </tr>
+                </thead>
 
-              <div class="accepted-games-container">
-                <div class="container"></div>
-              </div>
+                <tbody></tbody>
+
+              </table>
+
             </div>
+
           </div>
           <div class="col-2"></div>
+
         </div>
+
       </div>
+
+
+      <%- include('./footer') %>
 
     </div>
 
+    <script type="module" src="/cropper/cropper.js"></script>
+    <script type="module">
+      import { createGameList } from '/createGameList.js'
+      import { createGameTable } from '/createGameTable.js'
 
-    <%- include('./footer') %>
+      var gameList = JSON.parse('<%- JSON.stringify(gameList)%>')
+      console.log('game list: ', gameList)
+      if (gameList.length !== 0) {
+        createGameTable(gameList, '#submitting-game-table tbody')
+      }
 
-  </div>
-
-  <script type="module" src="/cropper/cropper.js"></script>
-  <script type="module">
-    import { createGameList } from '/createGameList.js'
-    var gameList = JSON.parse('<%- JSON.stringify(gameList)%>')
-    console.log('game list: ', gameList)
-    if (gameList.length !== 0) {
-      gameList.forEach(game => {
-        createGameList(game, '.accepted-games-container .container', 'accepted')
-
-      })
-    }
-  </script>
-  <script>
-
-  </script>
+    </script>
 
 </body>
 

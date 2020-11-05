@@ -4,8 +4,9 @@ const gameSchema = new mongoose.Schema({
   userId: { type: String },
   name: { type: String },
   url: { type: String },
-  image: { type: String },
-  status: {type: String, enum: ['pending', 'active'], default: 'pending'}
+  cover: { type: String },
+  status: {type: String, enum: ['pending', 'active'], default: 'pending'},
+  createdAt: {type: Date, default: new Date(Date.now())}
 })
 
 module.exports = mongoose.model('Game', gameSchema)
