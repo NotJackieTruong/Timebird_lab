@@ -354,7 +354,7 @@ router.get('/management/:id', function (req, res) {
 })
 
 // get setting account page
-router.get('/management/:id/settings', (req, res)=>{
+router.get('/management/:id/settings', (req, res) => {
   fetch.fetchUrl(`${ssoAddress}/users/${req.params.id}`, {
     method: 'GET'
   }, function (err, meta, result) {
@@ -453,6 +453,15 @@ router.get('/management/games/dashboard', (req, res) => {
   res.render('dashboard', {})
 })
 
+// transaction history
+router.get('/management/:id/transactions', (req, res) => {
+  console.log('id: ', req.params.id)
+  Wallet.findOne({ address: req.params.id }).exec((err, result) => {
+    if (err) throw err
+    res.render('transHistory', { transHistory: result })
+  })
+})
+
 // create new user from root level
 router.get('/createNewUser', (req, res) => {
   res.render('createNewUser', {})
@@ -464,8 +473,6 @@ router.get('/game', function (req, res) {
   console.log('game url: ', game)
   res.render('game', { gameUrl: `${gameAddress}/${game}` })
 })
-
-
 
 router.post('/tokens', function (req, res) {
   console.log('req body: ', req.body)

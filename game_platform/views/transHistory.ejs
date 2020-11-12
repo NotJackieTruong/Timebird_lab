@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  <style>
+    .accepted-games-container {
+      /* padding: 0 24px; */
+      display: flex;
+      flex-direction: column;
+    }
+
+    table#submitting-game-table tbody th {
+      vertical-align: middle;
+    }
+
+    table#submitting-game-table tbody .game-cover {
+      width: 131px;
+    }
+
+    table#submitting-game-table th,
+    td {
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+            <%- include('./sidebar') %>
+          </div>
+          <div class="col">
+            <div class="page-content">
+              <h3><strong>Transaction history</strong></h3>
+              <p>Including deposits, withdrawals and transfers</p>
+              <table class="table table-dark table-hover table-responsive-md trans-table">
+                <thead>
+                  <tr>
+                    <th id="value">Value</th>
+                    <th id="sourceAddress">From</th>
+                    <th id="destAddress">To</th>
+                    <th id="tran_date">Date</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+
+            </div>
+
+          </div>
+          <div class="col-2"></div>
+
+        </div>
+
+      </div>
+      <%- include('./footer') %>
+
+    </div>
+
+    <script type="module" src="/cropper/cropper.js"></script>
+    <script type="module">
+      const transHistory = JSON.parse('<%- JSON.stringify(transHistory) %>')
+      console.log('trans history: ', transHistory)
+      if (transHistory) {
+        transHistory.book.forEach(trans => {
+          var tr = document.createElement('tr')
+          document.querySelectorAll('.trans-table thead th').forEach(element => {
+            var th = document.createElement('th')
+            th.innerHTML = element.id === 'tran_date' ? new Date(trans[element.id]).toDateString() : trans[element.id]
+            tr.appendChild(th)
+          })
+          document.querySelector('.trans-table tbody').appendChild(tr)
+        })
+      }
+    </script>
+
+</body>
+
+</html>
