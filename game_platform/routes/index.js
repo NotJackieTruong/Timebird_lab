@@ -467,6 +467,11 @@ router.get('/deposit', (req, res)=>{
   res.render('deposit', {})
 })
 
+// withdraw
+router.get('/withdraw', (req, res)=>{
+  res.render('withdraw', {})
+})
+
 // create new user from root level
 router.get('/createNewUser', (req, res) => {
   res.render('createNewUser', {})
