@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  <style>
+    select.custom-select-1 {
+      height: 80%;
+      margin: 8px 0;
+    }
+
+    .form-header.standalone {
+      width: 100%;
+      margin-right: 15px;
+      margin-left: 15px;
+    }
+
+    .favorite {
+      opacity: 0.5;
+    }
+
+    .favorite:hover {
+      cursor: pointer;
+    }
+
+    .favorite.clicked {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+            <%- include('./sidebar') %>
+          </div>
+          <div class="col">
+            <div class="page-content">
+              <!-- <div class="user-list" id="user-list"></div> -->
+              <h3><strong>Profile settings</strong></h3>
+              <p>Please fill in the form below to use advance features of the website!</p>
+              <div class="container">
+                <!-- 1st row -->
+                <div class="row">
+                  <!-- wallet -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Your wallet</strong></h6>
+                    </div>
+                    <div class="form-detail" style="padding-left: 0;">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col">
+                            <select class="form-control custom-select-1" id="exampleSelect1">
+                              <option>Wallet 1</option>
+                              <option>Wallet 2</option>
+                              <option>Wallet 3</option>
+                              <option>Wallet 4</option>
+                              <option>Wallet 5</option>
+                            </select>
+                          </div>
+                          <div class="col">
+                            <button class="btn btn-custom-1 btn-full-width">Add</button>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <!-- security settings -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Security settings</strong></h6>
+                    </div>
+                    <div class="form-detail">
+                      <div class="form-group row">
+                        <!-- Material input -->
+                        <div class="col-7">
+                          <div class="md-form mt-0">
+                            <p style="margin-top: 1rem;">Log out all browsers</p>
+                          </div>
+                        </div>
+
+                        <div class="col">
+                          <button class="btn btn-custom-1 btn-full-width">Log out</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2nd row -->
+                <div class="row">
+                  <!-- account settings -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Account settings</strong></h6>
+                    </div>
+                    <div class="form-detail" style="padding-left: 0;">
+                      <table class="table table-striped">
+                        <thead class="black white-text">
+                          <tr>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Turn off loggin in with email</th>
+                            <td>
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="loginWithEmail">
+                                <label class="custom-control-label" for="loginWithEmail"></label>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Display supermumerary number on control board</th>
+                            <td>
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="supermumeraryNumber" checked>
+                                <label class="custom-control-label" for="supermumeraryNumber"></label>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Join promotional program</th>
+                            <td>
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="promotionalProgram" checked>
+                                <label class="custom-control-label" for="promotionalProgram"></label>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Turn off zone</th>
+                            <td>
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="zone">
+                                <label class="custom-control-label" for="zone"></label>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+
+                  <!-- notification -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Notification</strong></h6>
+                    </div>
+                    <div class="form-detail" style="padding-left: 0;">
+                      <table class="table table-striped">
+                        <thead class="black white-text">
+                          <tr>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Send me email to notify information and update events</th>
+                            <td>
+                              <!-- Default switch -->
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="informationAndEvent">
+                                <label class="custom-control-label" for="informationAndEvent"></label>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Send me confirmation email when I transact money to account</th>
+                            <td>
+                              <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="moneyTransaction" checked>
+                                <label class="custom-control-label" for="moneyTransaction"></label>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3rd row -->
+                <div class="row">
+                  <!-- choose update method -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Choose update promotional point method</strong></h6>
+                    </div>
+                    <div class="form-detail">
+                      <div class="row">
+                        <div class="col">
+                          <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="bet" name="defaultExampleRadios">
+                            <label class="custom-control-label" for="bet">Bonus points for bet</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="supermumeraryNumber2"
+                              name="defaultExampleRadios">
+                            <label class="custom-control-label" for="supermumeraryNumber2">Promotional based on
+                              supermumerary number</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- check promotional code -->
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Check promotional code</strong></h6>
+                    </div>
+                    <div class="form-detail">
+                      <div class="row">
+                        <div class="col-5">
+                          <div class="md-form" style="margin-top: 0; margin-bottom: 0;">
+                            <input type="text" id="form1" class="form-control">
+                            <label for="form1">Example label</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <button class="btn btn-custom-1 btn-full-width">Check</button>
+                        </div>
+                        <div class="col">
+                          <button class="btn btn-dark btn-full-width">History</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4th row -->
+                <div class="row">
+                  <div class="form-header standalone">
+                    <div class="row">
+                      <div class="col">
+                        <h6><strong>Edit your favorite</strong></h6>
+                      </div>
+                      <div class="col-3">
+                        <button class="btn btn-light btn-full-width" style="margin: 0; padding: 0; height: 100%;">Delete
+                          all favorites</button>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="form-detail" style="width: 100%; padding: 8px 16px;">
+                    <div class="container">
+                      <div class="row" style="height: 57.88px;">
+                        <div class="col">
+                          <select class="browser-default custom-select custom-select-1">
+                            <option selected>Open this select menu</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                          </select>
+                        </div>
+                        <div class="col"><select class="browser-default custom-select custom-select-1">
+                            <option selected>Open this select menu</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                          </select></div>
+                        <div class="col"><select class="browser-default custom-select custom-select-1">
+                            <option selected>Open this select menu</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                          </select></div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- 5th row -->
+                <div class="row">
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Sports for betting early</strong></h6>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-header">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="all1">
+                        <label class="custom-control-label" for="all1">Choose all</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-detail favorite-container-1 d-flex flex-wrap">
+                  </div>
+                </div>
+
+                <!-- 6th row -->
+                <div class="row">
+                  <div class="col">
+                    <div class="form-header">
+                      <h6><strong>Sports for betting in match</strong></h6>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-header">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="all2">
+                        <label class="custom-control-label" for="all2">Choose all</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-detail favorite-container-2 d-flex flex-wrap">
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-custom-1 btn-full-width" id="update">Save</button>
+            </div>
+          </div>
+          <div class="col-2"></div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <%- include('./footer') %>
+
+  </div>
+
+  <script type="module" src="/cropper/cropper.js"></script>
+
+  <script type="module">
+    import { createUserCard } from '/createUserCard.js'
+    import { createTransHistory } from '/createTransHistory.js'
+    const userInfo = JSON.parse('<%- JSON.stringify(userInfo)%>')
+    const userRole = JSON.parse('<%- JSON.stringify(role)%>')
+    const transHistory = JSON.parse('<%- JSON.stringify(transHistory)%>')
+
+    console.log('user info: ', userInfo)
+    console.log('trans history: ', transHistory)
+
+  </script>
+
+  <script>
+    for (var i = 0; i < 70; i++) {
+      var img = document.createElement('img')
+      img.src = 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg'
+      img.className = 'mb-4 mr-4 favorite'
+      img.style.width = '40px'
+      img.style.height = '40px'
+      document.querySelector('div.favorite-container-1').appendChild(img)
+    }
+
+    for (var i = 0; i < 50; i++) {
+      var img = document.createElement('img')
+      img.src = 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg'
+      img.className = 'mb-4 mr-4 favorite'
+      img.style.width = '40px'
+      img.style.height = '40px'
+      document.querySelector('div.favorite-container-2').appendChild(img)
+    }
+
+    document.querySelectorAll('.favorite-container-1 img, .favorite-container-2 img').forEach(element => {
+      element.addEventListener('click', (event) => {
+        element.classList.contains('clicked') === false ? element.classList.add('clicked') : element.classList.remove('clicked')
+        console.log('is contain: ', element.classList.contains('clicked'))
+
+      })
+    })
+  </script>
+
+  <script>
+    document.querySelector('input#all1').addEventListener('click', (event) => {
+      console.log('event: ', event.target.checked)
+      document.querySelectorAll('.favorite-container-1 img').forEach(element => {
+        event.target.checked ? element.classList.add('clicked') : element.classList.remove('clicked')
+      })
+    })
+
+    document.querySelector('input#all2').addEventListener('click', (event) => {
+      console.log('event: ', event.target.checked)
+      document.querySelectorAll('.favorite-container-2 img').forEach(element => {
+        event.target.checked ? element.classList.add('clicked') : element.classList.remove('clicked')
+      })
+    })
+  </script>
+
+</body>
+
+</html>

@@ -353,6 +353,32 @@ router.get('/management/:id', function (req, res) {
 
 })
 
+// get setting account page
+router.get('/management/:id/settings', (req, res)=>{
+  fetch.fetchUrl(`${ssoAddress}/users/${req.params.id}`, {
+    method: 'GET'
+  }, function (err, meta, result) {
+    console.log('meta in index game platform: ', meta)
+    var result = result ? JSON.parse(result.toString('utf-8')) : null
+    console.log('result in index game platform: ', result)
+    // res.render('me')
+    var userInfo = result.userInfo
+    userInfo.avatar = `${ssoAddress}${userInfo.avatar}`
+    async.parallel({
+      role: callback => {
+        Role.findOne({ userId: userInfo._id }).exec(callback)
+      },
+      wallet: callback => {
+        Wallet.findOne({ address: userInfo._id }).exec(callback)
+      }
+    }, (err, results) => {
+      if (err) throw err
+      res.render('profileSettings', { userInfo: userInfo, role: results.role.role, transHistory: results.wallet.book })
+
+    })
+  })
+})
+
 // delete user
 router.delete('/management/:id', (req, res) => {
   try {

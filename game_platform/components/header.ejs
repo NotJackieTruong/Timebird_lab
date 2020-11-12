@@ -112,13 +112,14 @@
 
   .btn-full-width {
     width: 100%;
+    margin: .375rem 0;
   }
 
   /* form detail */
   div.form-header {
     background-color: #7d7d7d;
     color: white;
-    padding: 8px 16px;
+    padding: 12px 16px;
   }
 
   div.form-detail {
@@ -158,6 +159,16 @@
     max-width: 16%;
     height: auto;
   }
+
+  /* switch */
+  .custom-control-input:checked~.custom-control-label::before {
+    background-color: rgb(236, 114, 25);
+    border-color: rgb(236, 114, 25);
+  }
+
+  .custom-control-input~.custom-control-label:hover {
+    cursor: pointer;
+  }
 </style>
 <div id="navbar-container" class="sticky-top">
   <!--Top Navbar-->
@@ -190,6 +201,7 @@
             aria-expanded="false">My account</a>
           <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item me" id="me">Profile</a>
+            <a class="dropdown-item me" id="profileSettings">Profile settings</a>
             <a class="dropdown-item" href="#">Bet history</a>
             <a class="dropdown-item" id="sign-out">Sign out</a>
           </div>
@@ -379,6 +391,10 @@
   // handle going to me page
   document.querySelector('a#me').addEventListener('click', (event) => {
     window.location.href = `/management/${userId}`
+  })
+
+  document.querySelector('a#profileSettings').addEventListener('click', (event) => {
+    window.location.href = `/management/${userId}/settings`
   })
 
   // handle signing out
