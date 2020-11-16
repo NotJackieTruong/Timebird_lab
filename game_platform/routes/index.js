@@ -472,6 +472,11 @@ router.get('/withdraw', (req, res)=>{
   res.render('withdraw', {})
 })
 
+// bet history
+router.get('/betHistory', (req, res)=>{
+  res.render('betHistory', {})
+})
+
 // create new user from root level
 router.get('/createNewUser', (req, res) => {
   res.render('createNewUser', {})

@@ -1,0 +1,71 @@
+<style>
+  .main-container ul.nav.nav-tabs {
+    min-width: fit-content;
+  }
+
+  .main-container ul.nav.nav-tabs .nav-item {
+    height: fit-content;
+    margin: 0;
+  }
+
+  .main-container ul.nav.nav-tabs .nav-link {
+    padding: 0.2rem 0.375rem;
+  }
+</style>
+<div class="filter container bet-exchange-container">
+  <div class="row">
+    <div class="d-flex custom-background">
+      <input type="date" id="from" class="form-control" style="width: fit-content;"><span
+        style="font-style: 32px; font-weight: bolder;margin: 4px;">-</span>
+      <input type="date" id="to" class="form-control" style="width: fit-content;">
+      <button class="btn btn-custom-1 btn-custom-2">Display</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="d-flex custom-background main-container">
+      <ul class="nav nav-tabs d-flex" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="now-tab" data-toggle="tab" href="#now" role="tab" aria-controls="now"
+            aria-selected="true">Current</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="end-tab" data-toggle="tab" href="#end" role="tab" aria-controls="end"
+            aria-selected="false">Finished</a>
+        </li>
+      </ul>
+
+    </div>
+    <div class="custom-background sub-container">
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="now" role="tabpanel" aria-labelledby="now-tab">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-custom-2 btn-custom-3 btn-clicked">Bets do not match</button>
+            <button type="button" class="btn btn-custom-2 btn-custom-3">Bets match</button>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="end" role="tabpanel" aria-labelledby="end-tab">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-custom-2 btn-custom-3 btn-clicked">Paid bets</button>
+            <button type="button" class="btn btn-custom-2 btn-custom-3">Canceled bets</button>
+            <button type="button" class="btn btn-custom-2 btn-custom-3">Refund bets</button>
+            <button type="button" class="btn btn-custom-2 btn-custom-3">Void bets</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.sub-container button').forEach(element => {
+    element.addEventListener('click', event => {
+      console.log('event: ', event.target)
+      document.querySelectorAll(`.sub-container div[id="${event.target.closest('div.tab-pane').getAttribute('id')}"] button`).forEach(element => {
+        element.classList.remove('btn-clicked')
+      })
+      event.target.classList.add('btn-clicked')
+
+    })
+  })
+</script>

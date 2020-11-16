@@ -1,0 +1,74 @@
+<div class="filter container">
+  <div class="row">
+    <div class="custom-background">
+      <select class="browser-default custom-select">
+        <option selected>Open this select menu</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+    <div class="d-flex custom-background">
+      <input type="date" id="from" class="form-control" style="width: fit-content;"><span
+        style="font-style: 32px; font-weight: bolder;margin: 4px;">-</span>
+      <input type="date" id="to" class="form-control" style="width: fit-content;">
+      <button class="btn btn-custom-1 btn-custom-2">Display</button>
+      <button class="btn btn-elegant btn-custom-2">Require bet history</button>
+      <button class="btn btn-custom-1 btn-custom-2">Delete</button>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="d-flex custom-background">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="sport" checked>
+        <label class="custom-control-label" for="sport">Sport</label>
+      </div>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="live" checked>
+        <label class="custom-control-label" for="live">Live</label>
+      </div>
+    </div>
+    <div class="d-flex custom-background">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="paid" checked>
+        <label class="custom-control-label" for="paid">Paid</label>
+      </div>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="unpaid" checked>
+        <label class="custom-control-label" for="unpaid">Unpaid</label>
+      </div>
+    </div>
+    <div class="d-flex custom-background">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="paidTime" checked>
+        <label class="custom-control-label" for="paidTime">Based on paid time</label>
+      </div>
+    </div>
+    <div class="d-flex custom-background">
+      <button class="btn btn-elegant dropdown-toggle btn-custom-2" type="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All</button>
+
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Single bet</a>
+        <a class="dropdown-item" href="#">Chain bet</a>
+        <a class="dropdown-item" href="#">Building bet</a>
+        <a class="dropdown-item" href="#">New chain bet</a>
+        <a class="dropdown-item" href="#">Multiple bets</a>
+        <a class="dropdown-item" href="#">Anti-chain bet</a>
+        <a class="dropdown-item" href="#">System bet</a>
+
+      </div>
+
+      <button class="btn btn-elegant dropdown-toggle btn-custom-2" type="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Bet time</button>
+
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Bet time</a>
+        <a class="dropdown-item" href="#">Bet rate</a>
+        <a class="dropdown-item" href="#">Bet</a>
+        <a class="dropdown-item" href="#">Some Russian string</a>
+      </div>
+    </div>
+  </div>
+</div>
