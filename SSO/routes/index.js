@@ -16,6 +16,13 @@ const accessTokenSecret = 'somerandomaccesstoken';
 const refreshTokenSecret = 'somerandomstringforrefreshtoken';
 const refreshTokens = [];
 
+require('dotenv').config()
+
+
+var gameAddress = (process.env.GAME_ADDRESS || 'http://localhost:3002')
+var gamePlatformAddress = (process.env.GAME_PLATFORM_ADDRESS || 'http://localhost:3000')
+var ssoAddress = (process.env.SSO_ADDRESS || 'http://localhost:3001')
+
 // var rootAccount = {
 //   _id: new mongoose.Types.ObjectId('5f8d6dbf59e889d8522259af'),
 //   // role: "root",
@@ -81,9 +88,9 @@ router.post('/register', (req, res) => {
         refreshTokens.push(refreshToken);
         console.log('access token: ', accessToken)
 
-        res.send({ accessToken: accessToken, url: 'http://localhost:3000/home' })
+        res.send({ accessToken: accessToken, url: `${gamePlatformAddress}/home` })
       } else {
-        res.send({ message: 'Failed to register!', url: 'http://localhost:3000/' })
+        res.send({ message: 'Failed to register!', url: `${gamePlatformAddress}` })
 
       }
 
@@ -102,29 +109,29 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
   console.log('req', req.body)
   const reqJWT = req.body.jwt
-  User.findOne({ email: req.body.email }).select('name _id').exec((err, result) => {
+  User.findOne({ email: req.body.email }).select('name _id isActive').exec((err, result) => {
     if (err) throw err
-    console.log('result of login: ', result)
-    if (result) {
+    console.log('result of login: ', result.isActive)
+    if (result && result.isActive) {
       // create accesss and refresh token
       const accessToken = jwt.sign({ id: result._id, name: result.name }, accessTokenSecret, { expiresIn: '20m' });
       const refreshToken = jwt.sign({ id: result._id, name: result.name }, refreshTokenSecret);
       refreshTokens.push(refreshToken);
       console.log('access token: ', accessToken)
-      res.send({ accessToken: accessToken, url: 'http://localhost:3000/' })
+      res.send({ accessToken: accessToken, url: `${gamePlatformAddress}` })
 
     } else {
-      res.send({ message: 'Email or password is invalid!', url: 'http://localhost:3000/' })
+      res.send({ message: 'Email or password is invalid or your account is not active!', url: `${gamePlatformAddress}` })
     }
   })
 
 })
 
 // management
-router.get('/users', (req, res)=>{
-  User.find({}).exec((err, result)=>{
-    if(err) throw err
-    res.send({users: result})
+router.get('/users', (req, res) => {
+  User.find({}).exec((err, result) => {
+    if (err) throw err
+    res.send({ users: result })
   })
 })
 
@@ -152,7 +159,7 @@ router.delete('/users/:id', (req, res) => {
     deleteAvatarFromPublicFolder(result, () => {
       User.findOneAndDelete({ _id: req.params.id }).exec((err, result) => {
         if (err) throw err
-        res.send({message: 'Delete successfully!'})
+        res.send({ message: 'Delete successfully!' })
       })
     })
   })
@@ -164,9 +171,9 @@ router.put('/users/:id', (req, res) => {
   console.log('id: ', req.params.id)
   console.log('body: ', req.body)
   saveAvatarToPublicFolder(req.body, (userInfo) => {
-    User.findOneAndUpdate({ _id: req.params.id }, { $set: userInfo }, {new: true}).exec((err, result) => {
+    User.findOneAndUpdate({ _id: req.params.id }, { $set: userInfo }, { new: true }).exec((err, result) => {
       if (err) throw err
-      res.send({message: 'Update sucessfully', userInfo: result})
+      res.send({ message: 'Update sucessfully', userInfo: result })
     })
   })
 })

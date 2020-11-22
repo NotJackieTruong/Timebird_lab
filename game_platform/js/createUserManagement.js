@@ -11,16 +11,18 @@ const userCardHTML = `
   <div class="card-body">
 
     <!-- Title -->
-    <h4 class="card-title"><p id="name">Card title</p></h4>
+    <h4 class="card-title"><p><strong>Name: </strong><span id="name">Card title</span></p></h4>
     <!-- Text -->
-    <p class="card-text" id="_id"></p>
-    <p class="card-text" id="email"></p>
+    <p class="card-text"><strong>Id: </strong><span id="_id"></span></p>
+    <p class="card-text"><strong>Email: </strong><span id="email"></span></p>
+    <p class="card-text"><strong>Is active: </strong><span id="isActive"></span></p>
   </div>
 
   <!-- Card footer -->
-  <div class="card-footer">
+  <div class="card-footer d-flex flex-column">
     <button class="btn btn-blue-grey" id="edit">Edit</button>
     <button class="btn btn-elegant" id="delete">Delete</button>
+    <button class="btn btn-custom-1" id="active"></button>
 
   </div>
 
@@ -62,9 +64,15 @@ export const createUserManagement = (object, query) => {
   div.className = 'row mb-4 mt-4'
   div.innerHTML = userCardHTML
   div.querySelector('div.card').id = object._id
-  div.querySelectorAll('.card .card-body p').forEach(element => {
+  div.querySelectorAll('.card .card-body p span').forEach(element => {
     element.innerHTML = object[element.id]
   })
+  if (object.isActive === true) {
+    div.querySelector('button#active').innerHTML = 'Deactive'
+  } else {
+    div.querySelector('button#active').innerHTML = 'Active'
+
+  }
   div.querySelector('.card #avatar').setAttribute('src', object.avatar)
   document.querySelector(query).appendChild(div)
   const card = div.querySelector('.card')
@@ -115,5 +123,21 @@ export const createUserManagement = (object, query) => {
       })
     })
     $('#editUser').modal('show')
+  })
+
+  // active button
+  card.querySelector('button#active').addEventListener('click', (event) => {
+    var obj = {}
+    obj.isActive = object.isActive === true ? false : true
+    $.ajax({
+      type: 'PUT',
+      url: `/management/${event.target.closest('.card').id}`,
+      contentType: 'application/json',
+      data: JSON.stringify(obj),
+      success: result => {
+        console.log('result: ', result)
+        window.location.reload()
+      }
+    })
   })
 }

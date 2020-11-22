@@ -1,6 +1,7 @@
 <style>
   .main-container ul.nav.nav-tabs {
     min-width: fit-content;
+    margin: 0 !important;
   }
 
   .main-container ul.nav.nav-tabs .nav-item {
@@ -60,7 +61,6 @@
 <script>
   document.querySelectorAll('.sub-container button').forEach(element => {
     element.addEventListener('click', event => {
-      console.log('event: ', event.target)
       document.querySelectorAll(`.sub-container div[id="${event.target.closest('div.tab-pane').getAttribute('id')}"] button`).forEach(element => {
         element.classList.remove('btn-clicked')
       })

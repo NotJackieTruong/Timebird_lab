@@ -52,6 +52,39 @@
         <i class="fas fa-user mr-4 pr-3"></i>Profile settings
       </div>
     </li>
+    <li class="list-group-item list-group-item-action" id="deposit" onclick="getPage(`/deposit`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>Deposit
+      </div>
+    </li>
+    <li class="list-group-item list-group-item-action" id="withdraw" onclick="getPage(`/withdraw`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>Withdraw
+      </div>
+    </li>
+    <li class="list-group-item list-group-item-action" id="betHistory" onclick="getPage(`/betHistory`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>Bet history
+      </div>
+    </li>
+    <li class="list-group-item list-group-item-action" id="transHistory"
+      onclick="getPage(`/management/${window.localStorage.getItem('userId')}/transactions`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>Transaction history
+      </div>
+    </li>
+    <li class="list-group-item list-group-item-action" id="specialOfferAndGift"
+      onclick="getPage(`/specialOffers`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>Special offers and gifts
+      </div>
+    </li>
+    <li class="list-group-item list-group-item-action" id="transHistory"
+      onclick="getPage(`/vipRefund`)">
+      <div class="md-v-line">
+        <i class="fas fa-user mr-4 pr-3"></i>VIP refund
+      </div>
+    </li>
 
     <div class="game-provider-features-container" style="display: none;">
       <li class="list-group-item list-group-item-action" onclick="getPage('/management/games/accepted')">
@@ -78,30 +111,10 @@
         </div>
       </li>
     </div>
-    <li class="list-group-item list-group-item-action" id="profile"
-      onclick="getPage(`/management/${window.localStorage.getItem('userId')}/transactions`)">
-      <div class="md-v-line">
-        <i class="fas fa-user mr-4 pr-3"></i>Transaction history
-      </div>
-    </li>
-    <li class="list-group-item list-group-item-action" id="deposit"
-      onclick="getPage(`/deposit`)">
-      <div class="md-v-line">
-        <i class="fas fa-user mr-4 pr-3"></i>Deposit
-      </div>
-    </li>
-    <li class="list-group-item list-group-item-action" id="deposit"
-      onclick="getPage(`/withdraw`)">
-      <div class="md-v-line">
-        <i class="fas fa-user mr-4 pr-3"></i>Withdraw
-      </div>
-    </li>
-    <li class="list-group-item list-group-item-action" id="deposit"
-      onclick="getPage(`/betHistory`)">
-      <div class="md-v-line">
-        <i class="fas fa-user mr-4 pr-3"></i>Bet history
-      </div>
-    </li>
+
+
+
+
   </ul>
 </div>
 

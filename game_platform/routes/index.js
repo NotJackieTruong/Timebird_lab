@@ -396,6 +396,40 @@ router.delete('/management/:id', (req, res) => {
 
 })
 
+// deposit
+router.get('/deposit', (req, res)=>{
+  res.render('deposit', {})
+})
+
+// withdraw
+router.get('/withdraw', (req, res)=>{
+  res.render('withdraw', {})
+})
+
+// bet history
+router.get('/betHistory', (req, res)=>{
+  res.render('betHistory', {})
+})
+
+// transaction history
+router.get('/management/:id/transactions', (req, res) => {
+  console.log('id: ', req.params.id)
+  Wallet.findOne({ address: req.params.id }).exec((err, result) => {
+    if (err) throw err
+    res.render('transHistory', { transHistory: result })
+  })
+})
+
+// specialOffer and gifts
+router.get('/specialOffers', (req, res)=>{
+  res.render('specialOffer', {})
+})
+
+// refunds vip
+router.get('/vipRefund', (req, res)=>{
+  res.render('vipRefund', {})
+})
+
 // get accepted games
 router.get('/management/games/accepted', (req, res) => {
   Game.find({ status: 'active' }).exec((err, result) => {
@@ -453,29 +487,6 @@ router.get('/management/games/dashboard', (req, res) => {
   res.render('dashboard', {})
 })
 
-// transaction history
-router.get('/management/:id/transactions', (req, res) => {
-  console.log('id: ', req.params.id)
-  Wallet.findOne({ address: req.params.id }).exec((err, result) => {
-    if (err) throw err
-    res.render('transHistory', { transHistory: result })
-  })
-})
-
-// deposit
-router.get('/deposit', (req, res)=>{
-  res.render('deposit', {})
-})
-
-// withdraw
-router.get('/withdraw', (req, res)=>{
-  res.render('withdraw', {})
-})
-
-// bet history
-router.get('/betHistory', (req, res)=>{
-  res.render('betHistory', {})
-})
 
 // create new user from root level
 router.get('/createNewUser', (req, res) => {

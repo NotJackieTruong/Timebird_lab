@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  <style>
+    .accepted-games-container {
+      /* padding: 0 24px; */
+      display: flex;
+      flex-direction: column;
+    }
+
+    table#submitting-game-table tbody th {
+      vertical-align: middle;
+    }
+
+    table#submitting-game-table tbody .game-cover {
+      width: 131px;
+    }
+
+    table#submitting-game-table th,
+    td {
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phasebeam">
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
+    <%- include('./header') %>
+    <div class="page-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+            <%- include('./sidebar') %>
+          </div>
+          <div class="col">
+            <div class="page-content custom-background-dark">
+              <h3><strong>Special offers and gifts</strong></h3>
+              <p>Special offers and gifts available for you. Don't forget to open them before expiring!</p>
+              <div class="input-group" style="width: 25%; margin-bottom: 1rem;">
+                <input class="form-control" type="text" placeholder="Gift code...." style="border-radius: 0;">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-text1"
+                    style="border-radius: 0; border: none; background-color: white;"><i
+                      class="fas fa-paper-plane"></i></span>
+                </div>
+              </div>
+              <div class="terms-container">
+                <a href="#" data-toggle="modal" data-target="#termsAndUseModal" class="text-white"
+                  style="text-decoration: underline;">Terms and use</a>
+              </div>
+              <div class="reward-container">
+                <button class="btn btn-custom-1 btn-sm">Rewards</button>
+              </div>
+              <div class="content-body text-center">
+
+              </div>
+            </div>
+          </div>
+          <div class="col-2"></div>
+
+        </div>
+        <!-- modal -->
+        <div class="modal fade" id="termsAndUseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content"
+              style="background-color: #333; color: #fff; border: 0.5px solid #fff; border-radius: 6px;">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" style="color: white;">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <%- include('./footer') %>
+
+    </div>
+
+    <script type="module" src="/cropper/cropper.js"></script>
+
+</body>
+
+</html>
