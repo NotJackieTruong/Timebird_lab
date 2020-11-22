@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var fetch = require('fetch')
 var async = require('async');
-const fs = require('fs');
+var fs = require('fs');
+var mongoose = require('mongoose')
 var Wallet = require('../models/wallet')
 var Role = require('../models/role')
 var Game = require('../models/game')
@@ -104,6 +105,14 @@ const checkTokenMiddleWare = (req, res, next) => {
 
 // home page 
 router.get('/', function (req, res) {
+  Wallet.findOne({ address: '0' }).exec((err, result) => {
+    if (err) throw err
+    if (!result) {
+      new Wallet({
+        owner: 'host'
+      }).save()
+    }
+  })
   Game.find({ status: 'active' }).exec((err, result) => {
     if (err) throw err
     res.render('home', { gameList: result })
@@ -201,7 +210,8 @@ router.post('/handleAccessToken', async (req, res) => {
     if (!result) {
       new Wallet({
         address: payload.id,
-        book: []
+        book: [],
+        owner: payload.name
       }).save()
     }
   })
@@ -355,28 +365,29 @@ router.get('/management/:id', function (req, res) {
 
 // get setting account page
 router.get('/management/:id/settings', (req, res) => {
-  fetch.fetchUrl(`${ssoAddress}/users/${req.params.id}`, {
-    method: 'GET'
-  }, function (err, meta, result) {
-    console.log('meta in index game platform: ', meta)
-    var result = result ? JSON.parse(result.toString('utf-8')) : null
-    console.log('result in index game platform: ', result)
-    // res.render('me')
-    var userInfo = result.userInfo
-    userInfo.avatar = `${ssoAddress}${userInfo.avatar}`
-    async.parallel({
-      role: callback => {
-        Role.findOne({ userId: userInfo._id }).exec(callback)
-      },
-      wallet: callback => {
-        Wallet.findOne({ address: userInfo._id }).exec(callback)
-      }
-    }, (err, results) => {
+  try {
+    Role.findOne({ 'userId': req.params.id }).exec((err, result) => {
       if (err) throw err
-      res.render('profileSettings', { userInfo: userInfo, role: results.role.role, transHistory: results.wallet.book })
+      res.render('profileSettings', { profileSetting: result.setting })
 
     })
-  })
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+// profile setting
+router.put('/management/:id/settings', (req, res) => {
+  console.log('body: ', req.body)
+  try {
+    Role.findOneAndUpdate({ 'userId': req.params.id }, { $set: { setting: req.body } }, { new: true }).exec((err, result) => {
+      if (err) throw err
+      res.send({ profileSetting: result })
+
+    })
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 // delete user
@@ -397,17 +408,17 @@ router.delete('/management/:id', (req, res) => {
 })
 
 // deposit
-router.get('/deposit', (req, res)=>{
+router.get('/deposit', (req, res) => {
   res.render('deposit', {})
 })
 
 // withdraw
-router.get('/withdraw', (req, res)=>{
+router.get('/withdraw', (req, res) => {
   res.render('withdraw', {})
 })
 
 // bet history
-router.get('/betHistory', (req, res)=>{
+router.get('/betHistory', (req, res) => {
   res.render('betHistory', {})
 })
 
@@ -421,12 +432,12 @@ router.get('/management/:id/transactions', (req, res) => {
 })
 
 // specialOffer and gifts
-router.get('/specialOffers', (req, res)=>{
+router.get('/specialOffers', (req, res) => {
   res.render('specialOffer', {})
 })
 
 // refunds vip
-router.get('/vipRefund', (req, res)=>{
+router.get('/vipRefund', (req, res) => {
   res.render('vipRefund', {})
 })
 
@@ -495,9 +506,21 @@ router.get('/createNewUser', (req, res) => {
 
 // get game page to play game
 router.get('/game', function (req, res) {
+  console.log('game url: ', req.query)
+
   var game = req.query.game
-  console.log('game url: ', game)
-  res.render('game', { gameUrl: `${gameAddress}/${game}` })
+  var gameId = req.query.gameId
+  try {
+    Game.findOneAndUpdate({ _id: mongoose.Types.ObjectId(gameId) }, { $inc: { visited: 1 } }, { new: true }).exec((err, result) => {
+      if (err) throw err
+      console.log(result)
+    })
+    res.render('game', { gameUrl: `${gameAddress}/${game}` })
+
+
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 router.post('/tokens', function (req, res) {
@@ -597,5 +620,7 @@ router.post('/updatetoken', (req, res, next) => {
   })
 
 })
+
+
 
 module.exports = router;

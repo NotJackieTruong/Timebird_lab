@@ -106,7 +106,7 @@
                     <div class="form-header">
                       <h6><strong>Account settings</strong></h6>
                     </div>
-                    <div class="form-detail" style="padding-left: 0;">
+                    <div class="form-detail" id="accountSettings" style="padding-left: 0;">
                       <table class="table table-striped">
                         <thead class="black white-text">
                           <tr>
@@ -126,7 +126,7 @@
                             <th scope="row">Display supermumerary number on control board</th>
                             <td>
                               <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="supermumeraryNumber" checked>
+                                <input type="checkbox" class="custom-control-input" id="supermumeraryNumber">
                                 <label class="custom-control-label" for="supermumeraryNumber"></label>
                               </div>
                             </td>
@@ -135,7 +135,7 @@
                             <th scope="row">Join promotional program</th>
                             <td>
                               <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="promotionalProgram" checked>
+                                <input type="checkbox" class="custom-control-input" id="promotionalProgram">
                                 <label class="custom-control-label" for="promotionalProgram"></label>
                               </div>
                             </td>
@@ -160,7 +160,7 @@
                     <div class="form-header">
                       <h6><strong>Notification</strong></h6>
                     </div>
-                    <div class="form-detail" style="padding-left: 0;">
+                    <div class="form-detail" id="notificationSettings" style="padding-left: 0;">
                       <table class="table table-striped">
                         <thead class="black white-text">
                           <tr>
@@ -181,7 +181,7 @@
                             <th scope="row">Send me confirmation email when I transact money to account</th>
                             <td>
                               <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="moneyTransaction" checked>
+                                <input type="checkbox" class="custom-control-input" id="moneyTransaction">
                                 <label class="custom-control-label" for="moneyTransaction"></label>
                               </div>
                             </td>
@@ -199,7 +199,7 @@
                     <div class="form-header">
                       <h6><strong>Choose update promotional point method</strong></h6>
                     </div>
-                    <div class="form-detail">
+                    <div class="form-detail" id="promotionalMethod">
                       <div class="row">
                         <div class="col">
                           <div class="custom-control custom-radio">
@@ -345,15 +345,19 @@
 
   <script type="module" src="/cropper/cropper.js"></script>
 
-  <script type="module">
-    import { createUserCard } from '/createUserCard.js'
-    import { createTransHistory } from '/createTransHistory.js'
-    const userInfo = JSON.parse('<%- JSON.stringify(userInfo)%>')
-    const userRole = JSON.parse('<%- JSON.stringify(role)%>')
-    const transHistory = JSON.parse('<%- JSON.stringify(transHistory)%>')
-
-    console.log('user info: ', userInfo)
-    console.log('trans history: ', transHistory)
+  <script>
+    var profileSetting = JSON.parse('<%- JSON.stringify(profileSetting)%>')
+    console.log('profile setting: ', profileSetting)
+    const displayProfileSetting = (profileSetting) => {
+      if (profileSetting) {
+        for (var prop in profileSetting) {
+          document.querySelectorAll(`div#${prop} input`).forEach(element => {
+            element.checked = profileSetting[prop][element.id] ? profileSetting[prop][element.id] : false
+          })
+        }
+      }
+    }
+    displayProfileSetting(profileSetting)
 
   </script>
 
@@ -397,6 +401,39 @@
       console.log('event: ', event.target.checked)
       document.querySelectorAll('.favorite-container-2 img').forEach(element => {
         event.target.checked ? element.classList.add('clicked') : element.classList.remove('clicked')
+      })
+    })
+  </script>
+
+  <script>
+    // handle saving account setting
+    document.querySelector('button#update').addEventListener('click', (event) => {
+      var obj = {
+        accountSettings: {},
+        notificationSettings: {},
+        promotionalMethod: {},
+        favorites: {}
+      }
+      document.querySelectorAll('div#accountSettings input').forEach(element => {
+        obj.accountSettings[element.id] = element.checked
+      })
+      document.querySelectorAll('div#notificationSettings input').forEach(element => {
+        obj.notificationSettings[element.id] = element.checked
+      })
+      document.querySelectorAll('div#promotionalMethod input').forEach(element => {
+        obj.promotionalMethod[element.id] = element.checked
+      })
+      console.log('obj: ', obj)
+      $.ajax({
+        type: 'PUT',
+        url: `/management/${window.localStorage.getItem('userId')}/settings`,
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        success: result => {
+          var profileSetting = result.profileSetting
+          console.log('result: ', profileSetting)
+          displayProfileSetting(profileSetting)
+        }
       })
     })
   </script>

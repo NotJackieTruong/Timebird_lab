@@ -54,5 +54,7 @@ export const createGameList = (object, query, type) => {
 
 const handlePlayGame = (event) => {
   var game = event.target.closest('.card').getAttribute('data-url')
-  window.location.href = `/game?game=${game}`
+  var gameId = event.target.closest('.card').id
+
+  window.location.href = `/game?game=${game}&gameId=${gameId}`
 }
