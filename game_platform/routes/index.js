@@ -4,6 +4,7 @@ var fetch = require('fetch')
 var async = require('async');
 var fs = require('fs');
 var mongoose = require('mongoose')
+var _ = require('lodash')
 var Wallet = require('../models/wallet')
 var Role = require('../models/role')
 var Game = require('../models/game')
@@ -63,6 +64,20 @@ const saveAvatarToPublicFolder = (obj, callback) => {
     callback(gameInfo)
 
   }
+}
+
+const formatDate = (date) => {
+  var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2)
+    month = '0' + month;
+  if (day.length < 2)
+    day = '0' + day;
+
+  return [year, month, day].join('-');
 }
 
 const deleteAvatarFromPublicFolder = (obj, callback) => {
@@ -495,7 +510,68 @@ router.put('/management/games/submitting/:id', (req, res) => {
 
 // get dashboard
 router.get('/management/games/dashboard', (req, res) => {
-  res.render('dashboard', {})
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  async.parallel({
+    users: callback => {
+      fetch.fetchUrl(`${ssoAddress}/users`, {
+        method: 'GET'
+      }, (err, meta, result) => {
+        if (result) {
+          try {
+            const users = JSON.parse(result.toString('utf-8')).users
+            var abc = _(users).groupBy(v => monthNames[new Date(v.createdAt).getMonth()])
+              .mapValues(v => _.map(v, 'name').length).value()
+            if (abc) {
+              var userArray = []
+              for (var prop in abc) {
+                userArray.push({
+                  month: prop,
+                  value: abc[prop]
+                })
+              }
+            }
+            callback(null, userArray)
+          } catch (error) {
+            console.error(error)
+          }
+
+        }
+      })
+    },
+    token: callback => {
+      Wallet.find({}).exec((err, result) => {
+        if (err) throw err
+        var transHistory = []
+        if (result) {
+          result.forEach(res => {
+            transHistory = _.concat(transHistory, res.book)
+          })
+        }
+        console.log('trans history: ', transHistory)
+        var abc = _(transHistory).orderBy('tran_date', ['asc'])
+          .groupBy(v => new Date(v.tran_date))
+          .mapValues(v => _.sumBy(v, 'value'))
+          .map((objs, key) => {
+            // console.log(`objs: ${objs}, key: ${key}`)
+            return {
+              date: formatDate(key),
+              value: objs
+            }
+          }).value()
+        callback(null, abc)
+      })
+    },
+    games: callback => {
+      Game.find({}).sort('-visited').limit(3).exec(callback)
+    }
+  }, (err, results) => {
+    if (err) throw err
+    console.log('results: ', results)
+    res.render('dashboard', { userArray: results.users, tokenArray: results.token, games: results.games })
+  })
+
 })
 
 

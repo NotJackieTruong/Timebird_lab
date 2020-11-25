@@ -5,6 +5,13 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
 
   <style>
+    .chart-container {
+      margin: auto;
+      width: 80%;
+    }
+    .page-content .row{
+      margin-bottom: 64px;
+    }
   </style>
 </head>
 
@@ -21,19 +28,22 @@
             <%- include('./sidebar') %>
           </div>
           <div class="col">
-            <div class="page-content">
+            <div class="page-content custom-background-dark">
               <!-- <div class="user-list" id="user-list"></div> -->
               <h3><strong>Dashboard</strong></h3>
-              <div class="container" style="height: 320px;">
+              <div class="container" style="height: fit-content;">
                 <div class="row">
-                  <div class="col">
-                    <canvas id="myChart" style="max-width: 800px;"></canvas>
-
-                  </div>
-                  <div class="col">
-                    <canvas id="radarChart" style="max-width: 800px;"></canvas>
+                  <div class="col text-center">
+                    <label for="chart-container">The number of users for the past months</label>
+                    <div class="chart-container" id="chart-container" style="background-color: black;"></div>
                   </div>
 
+                </div>
+                <div class="row">
+                  <div class="col text-center">
+                    <label for="chart-container-2">The number of tokens exchanged for the past months</label>
+                    <div class="chart-container" id="chart-container-2" style="background-color: black;"></div>
+                  </div>
 
                 </div>
               </div>
@@ -43,9 +53,7 @@
           <div class="col-2"></div>
         </div>
       </div>
-
     </div>
-
 
     <%- include('./footer') %>
 
@@ -53,7 +61,7 @@
 
   <script type="module" src="/cropper/cropper.js"></script>
   <script src="https://d3js.org/d3.v6.min.js"></script>
-  <script type="module">
+  <!-- <script type="module">
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
       type: 'bar',
@@ -128,7 +136,105 @@
         responsive: true
       }
     });
+  </script> -->
+
+  <script>
+    const userArray = JSON.parse('<%- JSON.stringify(userArray)%>')
+    console.log('userArray: ', userArray)
+    const tokenArray = JSON.parse('<%- JSON.stringify(tokenArray)%>')
+    console.log('tokenArray: ', tokenArray)
+
+    const createColumnChart = (data) => {
+      var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        width = 800,
+        height = 600
+      const svg = d3.create('svg').attr('viewBox', [0, 0, width, height])
+
+      var xScale = d3.scaleBand().domain(data.map(function (d) {
+        return d.month
+      })).range([margin.left, width - margin.right])
+      var yScale = d3.scaleLinear().domain([0, d3.max(data, function (d) {
+        return d.value
+      })]).nice().range([height - margin.bottom, margin.top])
+      // var g = svg.append('g').attr('transform', 'translate(' + 100 + ',' + 100 + ')')
+
+      var xAxis = g => g.attr('transform', `translate(0, ${height - margin.bottom})`).attr('color', 'white')
+        .call(d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0))
+        .call(
+          g => g.append('text')
+            .attr('x', width - margin.right)
+            .attr('y', -4)
+            .attr('fill', "currentColor")
+            .attr('font-weight', 'bold')
+            .attr('text-anchor', 'end')
+            .attr('color', 'white')
+            .text('Month')
+        )
+
+      var yAxis = g => g
+        .attr("transform", `translate(${margin.left},0)`).attr('color', 'white')
+        .call(d3.axisLeft(yScale).ticks(height / 40))
+        .call(g => g.select(".domain").remove())
+        .call(g => g.select(".tick:last-of-type text").clone()
+          .attr("x", 4)
+          .attr("text-anchor", "start")
+          .attr("font-weight", "bold")
+          .attr('color', 'white')
+          .text("Value"))
+
+      svg.append('g').attr('fill', 'rgb(236, 114, 25)').selectAll('rect').data(data)
+        .join('rect')
+        .attr('x', d => { return xScale(d.month) })
+        .attr("width", 20)
+        .attr('y', d => { return yScale(d.value) })
+        .attr("height", (d) => { return height - margin.bottom - yScale(d.value); })
+        .attr('color', 'white')
+
+      svg.append('g').call(xAxis)
+      svg.append('g').call(yAxis)
+
+      return svg.node()
+    }
+
+    var chart = createColumnChart(userArray)
+    document.querySelector('#chart-container').append(chart)
+
+    const createAreaChart = (data) => {
+      var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        width = 800,
+        height = 600
+      const svg = d3.create('svg').attr('viewBox', [0, 0, width, height]).attr('x', 80).attr('y', 80).text('Users in month')
+      data = data.map(d => {
+        return {
+          date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value
+        }
+      })
+      console.log('data: ', data)
+      // x axis
+      var x = d3.scaleTime()
+        .domain(d3.extent(data, d => {
+          return d.date
+        })).range([margin.left, width - margin.right])
+      svg.append('g').attr('transform', `translate(0, ${height - margin.bottom})`).call(d3.axisBottom(x))
+      // y axis
+      var y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => { return +d.value })]).range([height - margin.bottom, margin.top])
+      svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y))
+
+      svg.append('path').datum(data).attr('fill', '#cce5df')
+        .attr('stroke', '#69b3a2').attr('stroke-width', 1.5)
+        .attr('d', d3.area()
+          .x(function (d) { return x(d.date) })
+          .y0(y(0)).
+          y1(function (d) { return y(d.value) }))
+      return svg.node()
+    }
+    var chart2 = createAreaChart(tokenArray)
+    console.log('chart 2: ', chart2)
+    document.querySelector('#chart-container-2').append(chart2)
+
   </script>
+
 </body>
 
 </html>
