@@ -589,8 +589,9 @@ router.get('/game', function (req, res) {
   try {
     Game.findOneAndUpdate({ _id: mongoose.Types.ObjectId(gameId) }, { $inc: { visited: 1 } }, { new: true }).exec((err, result) => {
       if (err) throw err
-      console.log(result)
+      console.log('game found:', result)
     })
+    console.log(`gameURL: ${gameAddress}/${game}`)
     res.render('game', { gameUrl: `${gameAddress}/${game}` })
 
 
