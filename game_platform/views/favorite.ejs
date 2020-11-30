@@ -1,31 +1,53 @@
-<!-- <div class="container favorite-container d-flex flex-wrap">
-</div> -->
-
-<script>
-  // for (var i = 0; i < 70; i++) {
-  //   var img = document.createElement('img')
-  //   img.src = 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg'
-  //   img.className = 'mb-4 mr-4 favorite'
-  //   img.style.width = '40px'
-  //   img.style.height = '40px'
-  //   document.querySelector('div.favorite-container-1').appendChild(img)
-  // }
-
-  for (var i = 0; i < 50; i++) {
-    var img = document.createElement('img')
-    img.src = 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg'
-    img.className = 'mb-4 mr-4 favorite'
-    img.style.width = '40px'
-    img.style.height = '40px'
-    console.log('abc: ', document.querySelector('div.favorite-container-1'))
-    document.querySelector('div.favorite-container-2').appendChild(img)
+<style>
+  .favorite-container i {
+    font-size: 24px;
   }
+</style>
 
-  document.querySelectorAll('.favorite-container-1 img, .favorite-container-2 img').forEach(element => {
-    element.addEventListener('click', (event) => {
-      element.classList.contains('clicked') === false ? element.classList.add('clicked') : element.classList.remove('clicked')
-      console.log('is contain: ', element.classList.contains('clicked'))
+<div class="form-detail favorite-container d-flex flex-wrap">
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-basketball-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-bowling-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-dumbbell'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-football-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-futbol'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-golf-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-hockey-puck'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-quidditch'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skating'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing-nordic'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-snowboarding'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-table-tennis'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-volleyball-ball'></i></div>
 
-    })
-  })
-</script>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-basketball-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-bowling-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-dumbbell'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-football-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-futbol'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-golf-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-hockey-puck'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-quidditch'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skating'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing-nordic'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-snowboarding'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-table-tennis'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-volleyball-ball'></i></div>
+
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-basketball-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-bowling-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-dumbbell'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-football-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-futbol'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-golf-ball'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-hockey-puck'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-quidditch'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skating'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-skiing-nordic'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-snowboarding'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-table-tennis'></i></div>
+  <div class="icon-container mb-2 mr-4 mt-2 favorite"><i class='fas fa-volleyball-ball'></i></div>
+</div>
+

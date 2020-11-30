@@ -39,7 +39,9 @@
                         <p style="margin: 1rem 3rem 1rem 0;">Ecoin</p>
                         <button class="btn btn-danger btn-sm">Buy Ecoin</button>
                       </div>
-                      <div class="method d-flex flex-wrap"></div>
+                      <div class="method d-flex flex-wrap justify-content-center">
+                        <%- include('./coinMethod.ejs') %>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -58,31 +60,6 @@
   </div>
 
   <script type="module" src="/cropper/cropper.js"></script>
-  <script>
-    const card = `
-    <!-- Card -->
-    <!-- Card image -->
-  <div class="view overlay">
-    <img class="card-img-top" src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-      alt="Card image cap">
-    <a href="#!">
-      <div class="mask rgba-white-slight"></div>
-    </a>
-  </div>
-
-  <!-- Card content -->
-  <div class="card-body text-center" style="padding: 0; background-color: #2E2E2E;">
-    <p>Some method</p>
-  </div>
-<!-- Card -->`
-    for (var i = 0; i <= 15; i++) {
-      var div = document.createElement('div')
-      div.className = 'card mb-2 mr-4'
-      div.style.width = '8rem'
-      div.innerHTML = card
-      document.querySelector('.method').appendChild(div)
-    }
-  </script>
 
 </body>
 
