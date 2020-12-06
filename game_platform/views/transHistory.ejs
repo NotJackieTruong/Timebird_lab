@@ -42,10 +42,20 @@
             <%- include('./sidebar') %>
           </div>
           <div class="col">
-            <div class="page-content">
+            <div class="page-content custom-background-dark">
               <h3><strong>Transaction history</strong></h3>
               <p>Including deposits, withdrawals and transfers</p>
-              <table class="table table-dark table-hover table-responsive-md trans-table">
+              <div class="sort d-flex mb-4">
+                <input type="date" id="from" class="form-control" style="width: fit-content;"><span
+                  style="font-style: 32px; font-weight: bolder;margin: 4px;">-</span>
+                <input type="date" id="to" class="form-control" style="width: fit-content;">
+                <button class="btn btn-custom-1 btn-custom-2" id="btn-display">Display</button>
+                <button class="btn btn-custom-1 btn-custom-2" id="btn-export">Export Excel</button>
+              </div>
+              <p>Your present wallet balance: <strong><span id="wallet-value"></span></strong></p>
+
+
+              <table class="table table-bordered table-dark table-hover table-responsive-md trans-table">
                 <thead>
                   <tr>
                     <th id="value">Value</th>
@@ -69,21 +79,130 @@
 
     </div>
 
+    <script src="/lodash/lodash.js"></script>
     <script type="module" src="/cropper/cropper.js"></script>
-    <script type="module">
+    <script>
+      const findObj = (array, id) => {
+        return array.find(x => x.address === id)
+      }
+
+      const displayHistory = (mainArr, walletArr, query) => {
+        if (mainArr) {
+          document.querySelector(`${query} tbody`).innerHTML = ''
+          mainArr.book.forEach(trans => {
+            var tr = document.createElement('tr')
+            document.querySelectorAll(`${query} thead th`).forEach(element => {
+              var th = document.createElement('th')
+              switch (element.id) {
+                case ('tran_date'):
+                  th.innerHTML = new Date(trans[element.id]).toDateString()
+                  break;
+                case ('value'):
+                  th.innerHTML = trans.destAddress === mainArr.address ? trans[element.id] : -trans[element.id]
+                  break;
+
+                default:
+                  th.innerHTML = findObj(walletArr, trans[element.id].toString()).owner
+                  break;
+              }
+
+              tr.appendChild(th)
+            })
+            document.querySelector(`${query} tbody`).appendChild(tr)
+          })
+        }
+
+      }
+
+      const exportExcel = (function () {
+        var uri = 'data:application/vnd.ms-excel;base64,'
+          , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>'
+          , templateend = '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>'
+          , body = '<body>'
+          , tablevar = '<table>{table'
+          , tablevarend = '}</table>'
+          , bodyend = '</body></html>'
+          , worksheet = '<x:ExcelWorksheet><x:Name>'
+          , worksheetend = '</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>'
+          , worksheetvar = '{worksheet'
+          , worksheetvarend = '}'
+          , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+          , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+          , wstemplate = ''
+          , tabletemplate = '';
+
+        return function (table, name, filename) {
+          var tables = table;
+
+          for (var i = 0; i < tables.length; ++i) {
+            wstemplate += worksheet + worksheetvar + i + worksheetvarend + worksheetend;
+            tabletemplate += tablevar + i + tablevarend;
+          }
+
+          var allTemplate = template + wstemplate + templateend;
+          var allWorksheet = body + tabletemplate + bodyend;
+          var allOfIt = allTemplate + allWorksheet;
+
+          var ctx = {};
+          for (var j = 0; j < tables.length; ++j) {
+            ctx['worksheet' + j] = name[j];
+          }
+
+          for (var k = 0; k < tables.length; ++k) {
+            var exceltable;
+            if (!tables[k].nodeType) exceltable = document.querySelector(`table.${tables[k]}`);
+            ctx['table' + k] = exceltable.innerHTML;
+          }
+
+          var a = document.createElement('a');
+          a.href = uri + base64(format(allOfIt, ctx))
+          a.download = name + '.xls';
+          //triggering the function
+          a.click();
+        }
+      })();
+
+    </script>
+    <script>
       const transHistory = JSON.parse('<%- JSON.stringify(transHistory) %>')
       console.log('trans history: ', transHistory)
-      if (transHistory) {
-        transHistory.book.forEach(trans => {
-          var tr = document.createElement('tr')
-          document.querySelectorAll('.trans-table thead th').forEach(element => {
-            var th = document.createElement('th')
-            th.innerHTML = element.id === 'tran_date' ? new Date(trans[element.id]).toDateString() : trans[element.id]
-            tr.appendChild(th)
-          })
-          document.querySelector('.trans-table tbody').appendChild(tr)
+      const wallets = JSON.parse('<%- JSON.stringify(wallets)%>')
+      console.log('wallets: ', wallets)
+
+      // create custom history array
+
+      // display wallet balance
+      document.querySelector('span#wallet-value').innerHTML = transHistory.amount
+
+      displayHistory(transHistory, wallets, 'table.trans-table')
+
+    </script>
+
+    <script>
+      // sort button
+      document.querySelector('button#btn-display').addEventListener('click', event => {
+        var obj = {}
+        document.querySelectorAll('div.sort input').forEach(element => {
+          obj[element.id] = element.value
         })
-      }
+        // console.log('obj: ', transHistory)
+        var newTransHistory = {
+          ...transHistory, book: transHistory.book.filter(trans => {
+            if (new Date(obj.from).getTime() <= new Date(trans.tran_date).getTime()
+              && new Date(trans.tran_date).getTime() <= new Date(obj.to).getTime()) {
+              return trans
+            }
+          })
+        }
+        console.log('new trans history: ', newTransHistory)
+        displayHistory(newTransHistory, wallets, 'table.trans-table')
+      })
+
+      // export excel
+      document.querySelector('button#btn-export').addEventListener('click', event => {
+        exportExcel(['trans-table'], `transaction_history_report_${new Date(Date.now()).toLocaleDateString()}`)
+      })
+
     </script>
 
 </body>

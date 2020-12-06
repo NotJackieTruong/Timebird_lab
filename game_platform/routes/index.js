@@ -440,10 +440,18 @@ router.get('/betHistory', (req, res) => {
 // transaction history
 router.get('/management/:id/transactions', (req, res) => {
   console.log('id: ', req.params.id)
-  Wallet.findOne({ address: req.params.id }).exec((err, result) => {
+  async.parallel({
+    wallets: callback=>{
+      Wallet.find({}).exec(callback)
+    }, 
+    wallet: callback=>{
+      Wallet.findOne({ address: req.params.id }).exec(callback)
+    }
+  }, (err, results) => {
     if (err) throw err
-    res.render('transHistory', { transHistory: result })
+    res.render('transHistory', { transHistory: results.wallet, wallets: results.wallets })
   })
+  
 })
 
 // specialOffer and gifts
